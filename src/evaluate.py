@@ -26,7 +26,12 @@ from dotenv import load_dotenv
 from langsmith import Client
 from langchain import hub
 from langchain_core.prompts import ChatPromptTemplate
-from utils import check_env_vars, format_score, print_section_header, get_llm as get_configured_llm
+import logging
+from utils import check_env_vars, format_score, get_llm as get_configured_llm
+
+# Configurar logger local
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 from metrics import evaluate_f1_score, evaluate_clarity, evaluate_precision
 
 load_dotenv()
@@ -271,7 +276,9 @@ def display_results(prompt_name: str, scores: Dict[str, float]) -> bool:
 
 
 def main():
-    print_section_header("AVALIAÇÃO DE PROMPTS OTIMIZADOS")
+    logger.info("=" * 70)
+    logger.info("AVALIAÇÃO DE PROMPTS OTIMIZADOS")
+    logger.info("=" * 70 + "\n")
 
     provider = os.getenv("LLM_PROVIDER", "openai")
     llm_model = os.getenv("LLM_MODEL", "gpt-4o-mini")

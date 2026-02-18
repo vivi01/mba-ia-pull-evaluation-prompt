@@ -1,86 +1,174 @@
 """
-Script para fazer pull de prompts do LangSmith Prompt Hub.
+Script para hacer pull de prompts do LangSmith Prompt Hub.
 
-Este script:
-1. Conecta ao LangSmith usando credenciais do .env
-2. Faz pull dos prompts do Hub
-3. Salva localmente em prompts/bug_to_user_story_v1.yml
+Responsabilidades:
+- Conectar ao LangSmith usando credenciais do .env
+- Fazer pull dos prompts do Hub
+- Salvar localmente em prompts/
 
-SIMPLIFICADO: Usa serialização nativa do LangChain para extrair prompts.
+Estratégia de Fallback:
+- Se pull do Hub falhar, usa arquivo local como fallback
 """
 
 import os
 import sys
+import logging
 from pathlib import Path
+from typing import Any
+
 from dotenv import load_dotenv
 from langchain import hub
-from utils import save_yaml, check_env_vars, print_section_header
+
+from utils import save_yaml, check_env_vars
+
+# Configurar logger
+logger = logging.getLogger(__name__)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 load_dotenv()
 
 
-def pull_prompts_from_langsmith():
-    """Attempt to pull the base prompt from LangSmith Hub and save locally.
-
-    Behavior:
-    - Requires `LANGSMITH_API_KEY` in env and `LLM_PROVIDER` set (utils.check_env_vars used).
-    - Tries to pull `leonanluppi/bug_to_user_story_v1` from the hub.
-    - If pull fails, and a local `prompts/bug_to_user_story_v1.yml` exists, copies it to `prompts/raw_prompts.yml`.
-    """
-    required = ["LANGSMITH_API_KEY"]
-    if not check_env_vars(required):
-        return False
-
-    prompt_name = os.getenv("PULL_PROMPT_NAME", "leonanluppi/bug_to_user_story_v1")
-    dest = "prompts/raw_prompts.yml"
-
-    try:
-        print_section_header(f"PULL: {prompt_name}")
-        prompt_obj = hub.pull(prompt_name)
-
-        # Try to convert to a serializable structure. If prompt_obj has 'to_dict', prefer it.
-        data = None
+class PromptPuller:
+    """Responsável por fazer pull e salvar prompts do LangSmith Hub."""
+    
+    def __init__(self, prompt_name: str, output_path: str):
+        """
+        Inicializa o PullPrompts.
+        
+        Args:
+            prompt_name: Nome do prompt no Hub
+            output_path: Caminho de saída para salvar localmente
+        """
+        self.prompt_name = prompt_name
+        self.output_path = output_path
+    
+    def pull_from_hub(self) -> bool:
+        """
+        Faz pull do prompt do LangSmith Hub.
+        
+        Returns:
+            True se sucesso, False caso contrário
+        """
+        try:
+            logger.info(f"Puxando prompt do Hub: {self.prompt_name}")
+            prompt_obj = hub.pull(self.prompt_name)
+            
+            # Converter para estrutura serializável
+            data = self._serialize_prompt(prompt_obj, self.prompt_name)
+            
+            if save_yaml(data, self.output_path):
+                logger.info(f"✓ Prompt salvo em: {self.output_path}")
+                return True
+            else:
+                logger.error("Falha ao salvar prompt puxado")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Não foi possível puxar do Hub: {e}")
+            return False
+    
+    def _serialize_prompt(self, prompt_obj: Any, prompt_name: str) -> dict:
+        """
+        Converte objeto de prompt para estrutura serializável.
+        
+        Args:
+            prompt_obj: Objeto do prompt retornado pelo hub
+            prompt_name: Nome do prompt (para referência)
+            
+        Returns:
+            Dicionário com dados do prompt
+        """
+        # Tentar extrair conforme o tipo de objeto
         if hasattr(prompt_obj, "to_dict"):
-            data = prompt_obj.to_dict()
+            return prompt_obj.to_dict()
         elif hasattr(prompt_obj, "prompt"):
-            data = {"prompt": str(prompt_obj.prompt)}
+            return {"prompt": str(prompt_obj.prompt)}
         else:
-            # Fallback: store a small wrapper
-            data = {"name": prompt_name, "repr": repr(prompt_obj)}
-
-        saved = save_yaml(data, dest)
-        if saved:
-            print(f"✓ Prompt salvo em: {dest}")
-            return True
-        else:
-            print("❌ Falha ao salvar prompt puxado")
+            return {
+                "name": prompt_name,
+                "representation": repr(prompt_obj),
+                "note": "Prompt importado do LangSmith Hub"
+            }
+    
+    def use_local_fallback(self, local_path: str) -> bool:
+        """
+        Usa arquivo local como fallback se pull falhar.
+        
+        Args:
+            local_path: Caminho do arquivo local
+            
+        Returns:
+            True se sucesso, False caso contrário
+        """
+        try:
+            if not Path(local_path).exists():
+                logger.warning(f"Arquivo local não existe: {local_path}")
+                return False
+            
+            logger.info(f"Usando fallback local: {local_path}")
+            with open(local_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            
+            data = {
+                "source": "local_fallback",
+                "original_file": local_path,
+                "content": content
+            }
+            
+            if save_yaml(data, self.output_path):
+                logger.info(f"✓ Fallback salvo em: {self.output_path}")
+                return True
+            
+            logger.error("Falha ao salvar fallback local")
+            return False
+            
+        except Exception as e:
+            logger.error(f"Erro ao usar fallback local: {e}")
             return False
 
-    except Exception as e:
-        print(f"⚠️  Não foi possível puxar do Hub: {e}")
-        # Fallback: try to copy existing v1 file if present
-        local_v1 = "prompts/bug_to_user_story_v1.yml"
-        try:
-            if os.path.exists(local_v1):
-                with open(local_v1, "r", encoding="utf-8") as f:
-                    content = f.read()
-                # Save as raw_prompts.yml
-                saved = save_yaml({"source": "local_v1", "content": content}, dest)
-                if saved:
-                    print(f"✓ Copiado {local_v1} → {dest}")
-                    return True
-        except Exception:
-            pass
 
-        print("Consulte README.md para instruções de configuração do LangSmith e verifique suas credenciais.")
-        return False
-
-
-def main():
-    """Função principal"""
-    print_section_header("PULL PROMPTS")
-    ok = pull_prompts_from_langsmith()
-    return 0 if ok else 1
+def main() -> int:
+    """
+    Função principal - orquestra o pull de prompts.
+    
+    Returns:
+        0 se sucesso, 1 se erro
+    """
+    logger.info("=" * 70)
+    logger.info("PULL PROMPTS")
+    logger.info("=" * 70 + "\n")
+    
+    # Verificar variáveis obrigatórias
+    if not check_env_vars(["LANGSMITH_API_KEY"]):
+        return 1
+    
+    # Configurar parâmetros
+    prompt_name = os.getenv("PULL_PROMPT_NAME", "leonanluppi/bug_to_user_story_v1")
+    output_path = "prompts/raw_prompts.yml"
+    local_fallback = "prompts/bug_to_user_story_v1.yml"
+    
+    # Executar pull
+    puller = PromptPuller(prompt_name, output_path)
+    
+    if puller.pull_from_hub():
+        return 0
+    
+    # Tentar fallback local se pull falhou
+    logger.warning("\nTentando usar arquivo local como fallback...")
+    if puller.use_local_fallback(local_fallback):
+        return 0
+    
+    logger.error("\n❌ Falha total: Hub indisponível e sem fallback local")
+    logger.info(
+        "\nResolução:\n"
+        "1. Verifique LANGSMITH_API_KEY no .env\n"
+        "2. Certifique-se de que o arquivo local existe\n"
+        "3. Consulte README.md para instruções completas"
+    )
+    return 1
 
 
 if __name__ == "__main__":

@@ -1,125 +1,205 @@
 """
 Script para fazer push de prompts otimizados ao LangSmith Prompt Hub.
 
-Este script:
-1. Lê os prompts otimizados de prompts/bug_to_user_story_v2.yml
-2. Valida os prompts
-3. Faz push PÚBLICO para o LangSmith Hub
-4. Adiciona metadados (tags, descrição, técnicas utilizadas)
+Responsabilidades:
+- Ler prompts otimizados do YAML
+- Validar estrutura de prompts
+- Converter para ChatPromptTemplate
+- Fazer push com versionagem e metadados
+- Suportar múltiplos providers de LLM
 
-SIMPLIFICADO: Código mais limpo e direto ao ponto.
+Requisito de Segurança:
+- Prompts são publicados PUBLICAMENTE no Hub
+- Não incluir dados sensíveis ou chaves de API
 """
 
 import os
 import sys
+import logging
+from typing import Dict, Any, Tuple, List
+
 from dotenv import load_dotenv
 from langchain import hub
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.messages import SystemMessage, HumanMessage
-from utils import load_yaml, check_env_vars, print_section_header
+
+from utils import load_yaml, check_env_vars
+
+# Configurar logger
+logger = logging.getLogger(__name__)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 load_dotenv()
 
 
-def push_prompt_to_langsmith(prompt_name: str, prompt_data: dict) -> bool:
-    """
-    Faz push do prompt otimizado para o LangSmith Hub (PÚBLICO).
+class PromptValidator:
+    """Valida estrutura de prompts antes do push."""
+    
+    REQUIRED_FIELDS = {"description", "system_prompt", "version", "techniques_applied"}
+    MIN_TECHNIQUES = 2
+    
+    @staticmethod
+    def validate(prompt_data: Dict[str, Any]) -> Tuple[bool, List[str]]:
+        """
+        Valida estrutura de prompt YAML.
+        
+        Args:
+            prompt_data: Dados do prompt a validar
+            
+        Returns:
+            Tupla (é_válido, lista_de_erros)
+        """
+        errors = []
+        
+        if not isinstance(prompt_data, dict):
+            return False, ["prompt_data deve ser um dicionário"]
+        
+        # Verificar campos obrigatórios
+        for field in PromptValidator.REQUIRED_FIELDS:
+            if field not in prompt_data:
+                errors.append(f"Campo obrigatório faltando: {field}")
+        
+        # Validar técnicas
+        techniques = prompt_data.get("techniques_applied", [])
+        if not isinstance(techniques, list) or len(techniques) < PromptValidator.MIN_TECHNIQUES:
+            errors.append(
+                f"Campo 'techniques_applied' deve conter pelo menos "
+                f"{PromptValidator.MIN_TECHNIQUES} técnicas"
+            )
+        
+        # Validar system_prompt não está vazio
+        system_prompt = prompt_data.get("system_prompt", "").strip()
+        if not system_prompt:
+            errors.append("system_prompt está vazio")
+        
+        return (len(errors) == 0, errors)
 
-    Args:
-        prompt_name: Nome do prompt
-        prompt_data: Dados do prompt
 
-    Returns:
-        True se sucesso, False caso contrário
-    """
-    try:
-        print_section_header(f"PUSH: {prompt_name}")
-
-        is_valid, errors = validate_prompt(prompt_data)
+class PromptPusher:
+    """Responsável por fazer push de prompts ao LangSmith Hub."""
+    
+    def __init__(self, prompt_name: str, prompt_data: Dict[str, Any]):
+        """
+        Inicializa o PushPrompts.
+        
+        Args:
+            prompt_name: Nome para publish no Hub (ex: "username/prompt_name_v2")
+            prompt_data: Dados do prompt YAML
+        """
+        self.prompt_name = prompt_name
+        self.prompt_data = prompt_data
+    
+    def push(self) -> bool:
+        """
+        Faz push do prompt para LangSmith Hub.
+        
+        Returns:
+            True se sucesso, False caso contrário
+        """
+        logger.info(f"Iniciando push: {self.prompt_name}")
+        
+        # Validar prompt
+        is_valid, errors = PromptValidator.validate(self.prompt_data)
         if not is_valid:
-            print("❌ Prompt inválido:")
-            for e in errors:
-                print(f"  - {e}")
+            logger.error("Prompt inválido:")
+            for error in errors:
+                logger.error(f"  - {error}")
             return False
-
-        # Convert YAML data to ChatPromptTemplate
+        
         try:
-            system_prompt = prompt_data.get("system_prompt", "")
+            # Criar ChatPromptTemplate
+            chat_template = self._create_chat_template()
             
-            # Create a ChatPromptTemplate with the system prompt and bug_report input variable
-            chat_template = ChatPromptTemplate.from_messages([
-                ("system", system_prompt),
-                ("human", "{bug_report}")
-            ])
-            
-            # Add metadata to the template
-            chat_template.metadata = {
-                "description": prompt_data.get("description", ""),
-                "version": prompt_data.get("version", ""),
-                "techniques_applied": prompt_data.get("techniques_applied", []),
-                "few_shot_examples": prompt_data.get("few_shot_examples", []),
-                "notes": prompt_data.get("notes", "")
-            }
-            
-            # Push to LangChain hub
-            hub.push(prompt_name, chat_template)
-            print(f"✓ Prompt publicado: {prompt_name}")
+            # Fazer push
+            hub.push(self.prompt_name, chat_template)
+            logger.info(f"✓ Prompt publicado com sucesso: {self.prompt_name}")
             return True
+            
         except Exception as e:
-            print(f"⚠️  Não foi possível publicar automaticamente: {e}")
-            print("Instrua manualmente: abra https://smith.langchain.com/prompts e crie um novo prompt público com o YAML.")
+            logger.error(f"Erro ao fazer push: {e}")
+            logger.warning("Verifique LANGSMITH_API_KEY no .env")
             return False
+    
+    def _create_chat_template(self) -> ChatPromptTemplate:
+        """
+        Cria ChatPromptTemplate a partir dos dados YAML.
+        
+        Returns:
+            ChatPromptTemplate configurado com metadados
+        """
+        system_prompt = self.prompt_data.get("system_prompt", "")
+        
+        # Criar template com sistema e entrada de usuário
+        chat_template = ChatPromptTemplate.from_messages([
+            ("system", system_prompt),
+            ("human", "{bug_report}")  # Variável de entrada
+        ])
+        
+        # Adicionar metadados (preserved no Hub)
+        chat_template.metadata = {
+            "description": self.prompt_data.get("description", ""),
+            "version": self.prompt_data.get("version", ""),
+            "techniques_applied": self.prompt_data.get("techniques_applied", []),
+            "few_shot_examples": self.prompt_data.get("few_shot_examples", []),
+            "notes": self.prompt_data.get("notes", "")
+        }
+        
+        logger.debug(f"ChatPromptTemplate criado com metadados")
+        return chat_template
 
-    except Exception as e:
-        print(f"❌ Erro no push: {e}")
-        return False
 
-
-def validate_prompt(prompt_data: dict) -> tuple[bool, list]:
+def main() -> int:
     """
-    Valida estrutura básica de um prompt (versão simplificada).
-
-    Args:
-        prompt_data: Dados do prompt
-
+    Função principal - orquestra push de prompts.
+    
     Returns:
-        (is_valid, errors) - Tupla com status e lista de erros
+        0 se sucesso, 1 se erro
     """
-    errors = []
-    if not isinstance(prompt_data, dict):
-        return False, ["prompt_data deve ser um dicionário"]
-
-    # Basic required fields
-    required = ["description", "system_prompt", "version", "techniques_applied"]
-    for r in required:
-        if r not in prompt_data:
-            errors.append(f"Campo obrigatório faltando: {r}")
-
-    # techniques_applied must be a list with at least 2 entries
-    tech = prompt_data.get("techniques_applied", [])
-    if not isinstance(tech, list) or len(tech) < 2:
-        errors.append("Campo 'techniques_applied' deve conter pelo menos 2 técnicas")
-
-    return (len(errors) == 0, errors)
-
-
-def main():
-    """Função principal"""
-    print_section_header("PUSH PROMPT")
-
+    logger.info("=" * 70)
+    logger.info("PUSH PROMPT - PUBLICAR NO LANGSMITH HUB")
+    logger.info("=" * 70 + "\n")
+    
+    # Verificar variáveis obrigatórias
     if not check_env_vars(["LANGSMITH_API_KEY"]):
         return 1
-
+    
+    # Configurar parâmetros
     prompt_path = "prompts/bug_to_user_story_v2.yml"
-    data = load_yaml(prompt_path)
-    if not data:
-        print(f"❌ Não foi possível carregar: {prompt_path}")
+    prompt_name = os.getenv(
+        "PUSH_PROMPT_NAME", 
+        "Viviane Pereira/bug_to_user_story_v2"
+    )
+    
+    # Carregar YAML
+    logger.info(f"Carregando prompt: {prompt_path}")
+    prompt_data = load_yaml(prompt_path)
+    if not prompt_data:
+        logger.error(f"Falha ao carregar: {prompt_path}")
         return 1
-
-    prompt_name = os.getenv("PUSH_PROMPT_NAME", "Viviane Pereira/bug_to_user_story_v2")
-
-    success = push_prompt_to_langsmith(prompt_name, data)
-    return 0 if success else 1
+    
+    logger.info(f"✓ Prompt carregado com sucesso")
+    
+    # Fazer push
+    pusher = PromptPusher(prompt_name, prompt_data)
+    success = pusher.push()
+    
+    if success:
+        logger.info(
+            f"\n✓ Pronto! Acesse seu prompt em:\n"
+            f"  https://smith.langchain.com/prompts"
+        )
+        return 0
+    else:
+        logger.error("\n❌ Falha ao publicar prompt")
+        logger.info(
+            "Passos para resolver:\n"
+            "1. Verifique LANGSMITH_API_KEY no .env\n"
+            "2. Valide estrutura do YAML\n"
+            "3. Consulte README.md para instruções completas"
+        )
+        return 1
 
 
 if __name__ == "__main__":
