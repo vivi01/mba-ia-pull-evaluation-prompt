@@ -247,62 +247,6 @@ pip install -r requirements.txt
 
 ---
 
-## Técnicas Aplicadas (Fase 2)
-
-### 1. **Role Prompting**
-
-**O que é**: Definir uma persona específica para o modelo, estabelecendo contexto e expertise.
-
-**Por que foi escolhida**: A transformação de bug reports em User Stories exige um entendimento profissional do processo de Product Management. Ao designar o modelo como "Product Manager experiente", elevamos a qualidade e profissionalismo das respostas.
-
-**Como foi aplicada**:
-```yaml
-system_prompt: |
-  Você é um Product Manager experiente. Sua tarefa é transformar...
-```
-
-**Impacto**: Melhora significativamente o tone profissional, clareza e contexto das User Stories geradas.
-
----
-
-### 2. **Few-shot Learning**
-
-**O que é**: Fornecer exemplos de entrada/saída para guiar o modelo sobre o comportamento esperado.
-
-**Por que foi escolhida**: Exemplos concretos eliminam ambiguidade e mostram o formato exato esperado. Para bug→user story, exemplos claros são críticos pois melhoram:
-- Consistência de formato
-- Qualidade dos critérios de aceitação
-- Tom e linguagem profissional
-
-**Como foi aplicada**:
-```yaml
-few_shot_examples:
-  - input: "Bug: Ao tentar salvar um comentário, aparece erro 500..."
-    output: |
-      ### User Story
-      - **Como**: Usuário autenticado
-      - **Eu quero**: salvar comentários sem erro
-      - **Para que**: eu possa registrar feedback...
-      
-      **Critérios de Aceitação**:
-      - O comentário é persistido sem erro 500
-      - Mensagem de sucesso exibida ao usuário
-```
-
-**Impacto**: Aumenta drasticamente a precisão do formato, reduz hallucinations e garante que critérios de aceitação sejam sempre testáveis.
-
----
-
-### Resultados das Técnicas
-
-| Técnica | Métrica Impactada | Ganho Esperado |
-|---------|------------------|-----------------|
-| Role Prompting | Tone, Clarity | +30-40% |
-| Few-shot Learning | Format, Criteria, Completeness | +25-35% |
-| Combinadas | Média Geral | +50%+ |
-
----
-
 ## Ordem de execução
 
 ### 1. Executar pull dos prompts ruins
@@ -321,212 +265,10 @@ Edite manualmente o arquivo `prompts/bug_to_user_story_v2.yml` aplicando as téc
 python src/push_prompts.py
 ```
 
-### 4. Executar avaliação
+### 5. Executar avaliação
 
 ```bash
 python src/evaluate.py
-```
-
----
-
-## Resultados Finais
-
-### Métricas de Avaliação
-
-O projeto implementa **7 métricas de avaliação** usando LLM-as-Judge:
-
-#### Métricas Gerais (3)
-- **F1-Score**: Balanceamento entre precision e recall da resposta
-- **Clarity**: Clareza, estrutura e compreensibilidade
-- **Precision**: Informações corretas, relevantes e sem hallucinations
-
-#### Métricas Específicas para Bug→UserStory (4)
-- **Tone Score**: Profissionalismo, empatia e linguagem apropriada
-- **Acceptance Criteria Score**: Qualidade, testabilidade e especificidade dos critérios
-- **User Story Format Score**: Conformidade com estrutura "Como... Eu quero... Para que..."
-- **Completeness Score**: Contexto técnico, edge cases e informações suficientes
-
----
-
-### Dashboard LangSmith
-
-O projeto está integrado com LangSmith para:
-- ✓ Armazenar prompts versionados no Hub
-- ✓ Manter dataset de avaliação centralizado (15 exemplos)
-- ✓ Registrar traces de cada execução
-- ✓ Calcular métricas automaticamente
-- ✓ Comparar v1 vs v2 sidebyside
-
-**Acesso ao Dashboard**: 
-https://smith.langchain.com/
-
-Projetos:
-- Dataset: `desafio-prompt-engineering_mba-eval`
-- Prompts: Seu username em `/prompts/bug_to_user_story_v2`
-
----
-
-### Iterações e Melhoria
-
-Para atingir scores >= 0.9 em todas as métricas:
-
-**Ciclo Iterativo (3-5 iterações esperadas)**:
-
-```bash
-# Ciclo 1: Rodar avaliação
-python src/evaluate.py
-
-# Analisar resultados
-# Identificar qual métrica está baixa e por quê
-
-# Ciclo 2: Editar prompt
-# Melhorar instruções, exemplos ou critérios
-vim prompts/bug_to_user_story_v2.yml
-
-# Push atualizado
-python src/push_prompts.py
-
-# Avaliar novamente
-python src/evaluate.py
-
-# Continuar até >= 0.9 em TODAS métricas
-```
-
----
-
-### Estrutura do Projeto
-
-```
-mba-ia-pull-evaluation-prompt/
-├── prompts/
-│   ├── bug_to_user_story_v1.yml    # Original (após pull)
-│   └── bug_to_user_story_v2.yml    # Otimizado (v2)
-│
-├── datasets/
-│   └── bug_to_user_story.jsonl     # 15 exemplos para avaliação
-│
-├── src/
-│   ├── pull_prompts.py             # Pull de prompts do Hub
-│   ├── push_prompts.py             # Push ao Hub
-│   ├── evaluate.py                 # Pipeline de avaliação (7 métricas)
-│   ├── metrics.py                  # Implementação das 7 avaliadores
-│   └── utils.py                    # Funções auxiliares
-│
-├── tests/
-│   └── test_prompts.py             # 6 testes de validação
-│
-├── requirements.txt                # Dependências Python
-├── .env                            # Variáveis de ambiente
-└── README.md                       # Este arquivo
-```
-
----
-
-## Instruções de Execução
-
-### Pré-requisitos
-
-- **Python 3.9+**
-- **pip** (gerenciador de pacotes)
-- **Git**
-- **Credenciais configuradas**:
-  - `LANGSMITH_API_KEY` (obrigatório)
-  - `OPENAI_API_KEY` ou `GOOGLE_API_KEY` (para LLM)
-
-### Setup Inicial
-
-```bash
-# 1. Clone o repositório
-git clone https://github.com/seu-username/mba-ia-pull-evaluation-prompt
-cd mba-ia-pull-evaluation-prompt
-
-# 2. Crie um ambiente virtual
-python -m venv venv
-
-# 3. Ative o ambiente
-# No Windows:
-venv\Scripts\activate
-# No Linux/Mac:
-source venv/bin/activate
-
-# 4. Instale as dependências
-pip install -r requirements.txt
-
-# 5. Configure as variáveis de ambiente
-# Copie .env.example para .env e preencha suas chaves
-cp .env.example .env
-
-# Configure no arquivo .env:
-LANGSMITH_API_KEY=lsv2_pt_...
-OPENAI_API_KEY=sk-...  # OU
-GOOGLE_API_KEY=AIzaSy...
-
-# Escolha um provider (recomendado: openai para melhor quota)
-LLM_PROVIDER=openai
-```
-
----
-
-### Executar o Pipeline Completo
-
-```bash
-# 1. Pull do prompt original (v1)
-python src/pull_prompts.py
-# Saída: prompts/bug_to_user_story_v1.yml
-
-# 2. Refatorar/Otimizar (manual)
-# Edite: prompts/bug_to_user_story_v2.yml
-# Aplique as técnicas de prompt engineering
-
-# 3. Push da versão otimizada (v2)
-python src/push_prompts.py
-# Saída: Publicado em LangSmith Hub
-
-# 4. Executar avaliação
-python src/evaluate.py
-# Saída: Métricas para cada exemplo e média geral
-```
-
----
-
-### Rodar Testes
-
-```bash
-# Executar todos os 6 testes de validação
-pytest tests/test_prompts.py -v
-
-# Esperado: 6 PASSED
-```
-
----
-
-### Solução de Problemas
-
-#### Problema: "LANGSMITH_API_KEY não configurada"
-```bash
-# Solução:
-# 1. Gere chave em https://smith.langchain.com/settings/keys
-# 2. Adicione ao .env:
-LANGSMITH_API_KEY=lsv2_pt_seu_token_aqui
-```
-
-#### Problema: "Quota excedida do Gemini Free"
-```bash
-# Google Gemini Free Tier: 20 req/dia
-# Solução: Trocar para OpenAI
-# No .env:
-LLM_PROVIDER=openai
-OPENAI_API_KEY=sk-...
-```
-
-#### Problema: "Scores ainda baixos"
-```bash
-# Cicle as iterações:
-1. Analisar feedback das métricas no LangSmith Trace
-2. Editar prompts/bug_to_user_story_v2.yml
-3. python src/push_prompts.py
-4. python src/evaluate.py
-5. Repetir até todas métricas >= 0.9
 ```
 
 ---
@@ -541,79 +283,32 @@ OPENAI_API_KEY=sk-...
 
 2. **README.md deve conter:**
 
-   A) **Seção "Técnicas Aplicadas (Fase 2)"** ✓
-      - [x] Quais técnicas avançadas foram aplicadas
-      - [x] Justificativa de escolha
-      - [x] Exemplos práticos de aplicação
+   A) **Seção "Técnicas Aplicadas (Fase 2)"**:
 
-   B) **Seção "Resultados Finais"** ✓
-      - [x] Dashboard LangSmith e como acessar
-      - [x] Métricas implementadas (7)
-      - [x] Instruções de iteração
+   - Quais técnicas avançadas você escolheu para refatorar os prompts
+   - Justificativa de por que escolheu cada técnica
+   - Exemplos práticos de como aplicou cada técnica
 
-   C) **Seção "Como Executar"** ✓
-      - [x] Instruções claras e detalhadas
-      - [x] Pré-requisitos e dependências
-      - [x] Setup inicial completo
-      - [x] Comandos em ordem
-      - [x] Troubleshooting
+   B) **Seção "Resultados Finais"**:
+
+   - Link público do seu dashboard do LangSmith mostrando as avaliações
+   - Screenshots das avaliações com as notas mínimas de 0.9 atingidas
+   - Tabela comparativa: prompts ruins (v1) vs prompts otimizados (v2)
+
+   C) **Seção "Como Executar"**:
+
+   - Instruções claras e detalhadas de como executar o projeto
+   - Pré-requisitos e dependências
+   - Comandos para cada fase do projeto
 
 3. **Evidências no LangSmith**:
-   - Link: https://smith.langchain.com/
-   - Dataset: `desafio-prompt-engineering_mba-eval` com 15 exemplos
-   - Prompts publicados em seu perfil do LangSmith Hub
+   - Link público (ou screenshots) do dashboard do LangSmith
+   - Devem estar visíveis:
 
----
-
-## Resumo das Implementações
-
-### ✅ Todos os Requisitos Técnicos Implementados
-
-| Componente | Status | Arquivo |
-|-----------|--------|---------|
-| Pull de prompts | ✅ | `src/pull_prompts.py` |
-| Prompt original v1 | ✅ | `prompts/bug_to_user_story_v1.yml` |
-| Prompt otimizado v2 | ✅ | `prompts/bug_to_user_story_v2.yml` |
-| Push de prompts | ✅ | `src/push_prompts.py` |
-| Pipeline de avaliação | ✅ | `src/evaluate.py` |
-| 7 Métricas LLM-as-Judge | ✅ | `src/metrics.py` |
-| 6 Testes de validação | ✅ | `tests/test_prompts.py` |
-| Multi-provider (OpenAI + Gemini) | ✅ | `src/utils.py` |
-| Dataset (15 exemplos) | ✅ | `datasets/bug_to_user_story.jsonl` |
-| Documentação completa | ✅ | `README.md` |
-
----
-
-## Próximos Passos para Produção
-
-1. **Trocar para OpenAI** (melhor quota que Gemini Free):
-   ```bash
-   LLM_PROVIDER=openai
-   OPENAI_API_KEY=sk-...
-   ```
-
-2. **Executar primeira avaliação**:
-   ```bash
-   python src/evaluate.py
-   ```
-
-3. **Se scores < 0.9**, iterar o prompt:
-   - Analisar feedback no LangSmith Trace
-   - Editar `prompts/bug_to_user_story_v2.yml`
-   - Fazer push e avaliar novamente
-   - Repetir 3-5 vezes até >= 0.9
-
-4. **Publicar no GitHub** com evidências finais
-
----
-
-## Referências e Recursos
-
-- **LangSmith Documentation**: https://docs.smith.langchain.com/
-- **Prompt Engineering Guide**: https://www.promptingguide.ai/
-- **LangChain Documentation**: https://python.langchain.com/
-- **OpenAI API**: https://platform.openai.com/
-- **Google Gemini API**: https://ai.google.dev/
+     - Dataset de avaliação com ≥ 20 exemplos
+     - Execuções dos prompts v1 (ruins) com notas baixas
+     - Execuções dos prompts v2 (otimizados) com notas ≥ 0.9
+     - Tracing detalhado de pelo menos 3 exemplos
 
 ---
 
