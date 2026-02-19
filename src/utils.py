@@ -217,9 +217,8 @@ def extract_json_from_response(response_text: str) -> Optional[Dict[str, Any]]:
     return None
 
 
-def get_llm(model: Optional[str] = None, temperature: float = 0.0):
-    """
-    Factory para criar instância de LLM baseado no provider configurado.
+def get_llm(model: Optional[str] = None, temperature: float = 0.0) -> Any:
+    """Factory para criar instância de LLM baseado no provider configurado.
 
     Suporta:
     - OpenAI (ChatOpenAI)
@@ -252,7 +251,7 @@ def get_llm(model: Optional[str] = None, temperature: float = 0.0):
         return _create_google_llm(model_name, temperature)
 
 
-def _create_openai_llm(model_name: str, temperature: float):
+def _create_openai_llm(model_name: str, temperature: float) -> Any:
     """Cria LLM OpenAI com validação de credenciais."""
     from langchain_openai import ChatOpenAI
 
@@ -272,7 +271,7 @@ def _create_openai_llm(model_name: str, temperature: float):
     )
 
 
-def _create_google_llm(model_name: str, temperature: float):
+def _create_google_llm(model_name: str, temperature: float) -> Any:
     """Cria LLM Google Gemini com validação de credenciais."""
     from langchain_google_genai import ChatGoogleGenerativeAI
 
@@ -291,9 +290,8 @@ def _create_google_llm(model_name: str, temperature: float):
     )
 
 
-def get_eval_llm(temperature: float = 0.0):
-    """
-    Retorna LLM configurado especificamente para avaliação (usa EVAL_MODEL).
+def get_eval_llm(temperature: float = 0.0) -> Any:
+    """Retorna LLM configurado especificamente para avaliação (usa EVAL_MODEL).
     
     Tipicamente usa modelo mais poderoso para avaliação (ex: gpt-4o vs gpt-4o-mini).
 
@@ -312,8 +310,7 @@ def get_eval_llm(temperature: float = 0.0):
 # =============================================================================
 
 def validate_prompt_structure(prompt_data: Dict[str, Any]) -> tuple[bool, List[str]]:
-    """
-    API de compatibilidade com versão anterior para testes.
+    """API de compatibilidade com versão anterior para testes.
     
     Delega para PromptValidator.
     

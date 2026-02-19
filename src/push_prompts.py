@@ -13,16 +13,16 @@ Requisito de Segurança:
 - Não incluir dados sensíveis ou chaves de API
 """
 
+import logging
 import os
 import sys
-import logging
-from typing import Dict, Any, Tuple, List
+from typing import Any, Dict, List, Tuple
 
 from dotenv import load_dotenv
 from langchain import hub
 from langchain_core.prompts import ChatPromptTemplate
 
-from utils import load_yaml, check_env_vars
+from utils import check_env_vars, load_yaml
 
 # Configurar logger
 logger = logging.getLogger(__name__)

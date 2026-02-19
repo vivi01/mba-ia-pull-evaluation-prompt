@@ -17,31 +17,38 @@ Suporta múltiplos providers de LLM:
 Configure o provider no arquivo .env através da variável LLM_PROVIDER.
 """
 
+import json
+import logging
 import os
 import sys
-import json
-from typing import List, Dict, Any
 from pathlib import Path
+from typing import Any, Dict, List
+
 from dotenv import load_dotenv
-from langsmith import Client
 from langchain import hub
 from langchain_core.prompts import ChatPromptTemplate
-import logging
-from utils import check_env_vars, format_score, get_llm as get_configured_llm
+from langsmith import Client
 
-# Configurar logger local
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-from metrics import evaluate_f1_score, evaluate_clarity, evaluate_precision
+from metrics import evaluate_clarity, evaluate_f1_score, evaluate_precision
+from utils import check_env_vars, format_score, get_llm as get_configured_llm
 
 load_dotenv()
 
 
-def get_llm():
+def get_llm() -> Any:
+    """Retorna o LLM configurado com temperatura 0 para consistência."""
     return get_configured_llm(temperature=0)
 
 
 def load_dataset_from_jsonl(jsonl_path: str) -> List[Dict[str, Any]]:
+    """Carrega exemplos de um arquivo JSONL para avaliação.
+    
+    Args:
+        jsonl_path: Caminho do arquivo JSONL
+        
+    Returns:
+        Lista de dicionários com exemplos do dataset
+    """
     examples = []
 
     try:
@@ -67,6 +74,16 @@ def load_dataset_from_jsonl(jsonl_path: str) -> List[Dict[str, Any]]:
 
 
 def create_evaluation_dataset(client: Client, dataset_name: str, jsonl_path: str) -> str:
+    """Cria ou recupera um dataset de avaliação no LangSmith.
+    
+    Args:
+        client: Cliente do LangSmith
+        dataset_name: Nome do dataset
+        jsonl_path: Caminho do arquivo JSONL com exemplos
+        
+    Returns:
+        Nome do dataset criado ou existente
+    """
     print(f"Criando dataset de avaliação: {dataset_name}...")
 
     examples = load_dataset_from_jsonl(jsonl_path)
@@ -108,13 +125,24 @@ def create_evaluation_dataset(client: Client, dataset_name: str, jsonl_path: str
 
 
 def pull_prompt_from_langsmith(prompt_name: str) -> ChatPromptTemplate:
+    """Puxa um prompt do LangSmith Hub com tratamento robusto de erros.
+    
+    Args:
+        prompt_name: Nome do prompt no Hub
+        
+    Returns:
+        Objeto ChatPromptTemplate
+        
+    Raises:
+        RuntimeError: Se o prompt não for encontrado
+    """
     try:
         print(f"   Puxando prompt do LangSmith Hub: {prompt_name}")
         prompt = hub.pull(prompt_name)
         print(f"   ✓ Prompt carregado com sucesso")
         return prompt
 
-    except Exception as e:
+    except (RuntimeError, FileNotFoundError, ValueError) as e:
         error_msg = str(e).lower()
 
         print(f"\n{'=' * 70}")
@@ -145,11 +173,17 @@ def pull_prompt_from_langsmith(prompt_name: str) -> ChatPromptTemplate:
         raise
 
 
-def evaluate_prompt_on_example(
-    prompt_template: ChatPromptTemplate,
-    example: Any,
-    llm: Any
-) -> Dict[str, Any]:
+def evaluate_prompt_on_example(prompt_template: ChatPromptTemplate, example: Any, llm: Any) -> Dict[str, Any]:
+    """Avalia um modelo de prompt em um exemplo específico do dataset.
+    
+    Args:
+        prompt_template: Template do prompt
+        example: Exemplo do dataset
+        llm: Modelo de linguagem configurado
+        
+    Returns:
+        Dicionário com resposta, referência e pergunta
+    """
     try:
         inputs = example.inputs if hasattr(example, 'inputs') else {}
         outputs = example.outputs if hasattr(example, 'outputs') else {}
@@ -172,7 +206,7 @@ def evaluate_prompt_on_example(
             "question": question
         }
 
-    except Exception as e:
+    except (ValueError, KeyError, AttributeError) as e:
         print(f"      ⚠️  Erro ao avaliar exemplo: {e}")
         import traceback
         print(f"      Traceback: {traceback.format_exc()}")
@@ -183,11 +217,17 @@ def evaluate_prompt_on_example(
         }
 
 
-def evaluate_prompt(
-    prompt_name: str,
-    dataset_name: str,
-    client: Client
-) -> Dict[str, float]:
+def evaluate_prompt(prompt_name: str, dataset_name: str, client: Client) -> Dict[str, float]:
+    """Avalia um prompt contra um dataset de exemplos.
+    
+    Args:
+        prompt_name: Nome do prompt a avaliar
+        dataset_name: Nome do dataset de avaliação
+        client: Cliente do LangSmith
+        
+    Returns:
+        Dicionário com métricas de avaliação
+    """
     print(f"\n🔍 Avaliando: {prompt_name}")
 
     try:
@@ -233,7 +273,7 @@ def evaluate_prompt(
             "precision": round(avg_precision, 4)
         }
 
-    except Exception as e:
+    except (RuntimeError, ValueError, AttributeError, KeyError) as e:
         print(f"   ❌ Erro na avaliação: {e}")
         return {
             "helpfulness": 0.0,
@@ -245,6 +285,15 @@ def evaluate_prompt(
 
 
 def display_results(prompt_name: str, scores: Dict[str, float]) -> bool:
+    """Exibe resultados da avaliação de forma estruturada.
+    
+    Args:
+        prompt_name: Nome do prompt avaliado
+        scores: Dicionário com scores das métricas
+        
+    Returns:
+        True se aprovado (média >= 0.9), False caso contrário
+    """
     print("\n" + "=" * 50)
     print(f"Prompt: {prompt_name}")
     print("=" * 50)
@@ -275,7 +324,12 @@ def display_results(prompt_name: str, scores: Dict[str, float]) -> bool:
     return passed
 
 
-def main():
+def main() -> int:
+    """Função principal que orquestra a avaliação de prompts.
+    
+    Returns:
+        0 se sucesso, 1 se erro
+    """
     logger.info("=" * 70)
     logger.info("AVALIAÇÃO DE PROMPTS OTIMIZADOS")
     logger.info("=" * 70 + "\n")

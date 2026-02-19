@@ -10,16 +10,16 @@ Estratégia de Fallback:
 - Se pull do Hub falhar, usa arquivo local como fallback
 """
 
+import logging
 import os
 import sys
-import logging
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict
 
 from dotenv import load_dotenv
 from langchain import hub
 
-from utils import save_yaml, check_env_vars
+from utils import check_env_vars, save_yaml
 
 # Configurar logger
 logger = logging.getLogger(__name__)
@@ -66,11 +66,11 @@ class PromptPuller:
                 logger.error("Falha ao salvar prompt puxado")
                 return False
                 
-        except Exception as e:
+        except (ImportError, RuntimeError, FileNotFoundError) as e:
             logger.error(f"Não foi possível puxar do Hub: {e}")
             return False
     
-    def _serialize_prompt(self, prompt_obj: Any, prompt_name: str) -> dict:
+    def _serialize_prompt(self, prompt_obj: Any, prompt_name: str) -> Dict[str, Any]:
         """
         Converte objeto de prompt para estrutura serializável.
         
@@ -125,7 +125,7 @@ class PromptPuller:
             logger.error("Falha ao salvar fallback local")
             return False
             
-        except Exception as e:
+        except (FileNotFoundError, IOError, OSError) as e:
             logger.error(f"Erro ao usar fallback local: {e}")
             return False
 

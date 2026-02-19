@@ -22,28 +22,39 @@ Suporta múltiplos providers de LLM:
 Configure o provider no arquivo .env através da variável LLM_PROVIDER.
 """
 
-import os
 import json
+import logging
+import os
 import re
-from typing import Dict, Any
+from typing import Any, Dict
+
 from dotenv import load_dotenv
-from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.messages import HumanMessage, SystemMessage
+
 from utils import get_eval_llm
 
 load_dotenv()
 
 
-def get_evaluator_llm():
-    """
-    Retorna o LLM configurado para avaliação.
+def get_evaluator_llm() -> Any:
+    """Retorna o LLM configurado para avaliação.
+    
     Suporta OpenAI e Google Gemini baseado no .env
+    
+    Returns:
+        Modelo de linguagem para avaliação
     """
     return get_eval_llm(temperature=0)
 
 
 def extract_json_from_response(response_text: str) -> Dict[str, Any]:
-    """
-    Extrai JSON de uma resposta de LLM que pode conter texto adicional.
+    """Extrai JSON de uma resposta de LLM que pode conter texto adicional.
+    
+    Args:
+        response_text: Texto da resposta do LLM
+        
+    Returns:
+        Dicionário com JSON extraído
     """
     try:
         # Tentar parsear diretamente

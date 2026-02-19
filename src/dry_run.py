@@ -5,15 +5,33 @@ produces deterministic mock metrics and a JSON results file under `results/`.
 """
 from pathlib import Path
 import json
+from typing import Any, Dict, List
+
 import yaml
 
 
-def load_yaml(p: Path):
+def load_yaml(p: Path) -> Dict[str, Any]:
+    """Carrega um arquivo YAML.
+    
+    Args:
+        p: Caminho do arquivo YAML
+        
+    Returns:
+        Dicionário com dados do YAML
+    """
     with p.open("r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
-def load_jsonl(p: Path):
+def load_jsonl(p: Path) -> List[Dict[str, Any]]:
+    """Carrega um arquivo JSONL.
+    
+    Args:
+        p: Caminho do arquivo JSONL
+        
+    Returns:
+        Lista de dicionários com exemplos
+    """
     items = []
     with p.open("r", encoding="utf-8") as f:
         for line in f:
@@ -24,8 +42,16 @@ def load_jsonl(p: Path):
     return items
 
 
-def mock_metrics(prompt_meta: dict, n_examples: int):
-    """Return deterministic mock metrics based on prompt version and dataset size."""
+def mock_metrics(prompt_meta: Dict[str, Any], n_examples: int) -> Dict[str, float]:
+    """Retorna métricas mock determinísticas baseadas na versão do prompt.
+    
+    Args:
+        prompt_meta: Metadados do prompt (contendo versão)
+        n_examples: Número de exemplos no dataset
+        
+    Returns:
+        Dicionário com scores das 7 métricas
+    """
     version = str(prompt_meta.get("version", "v0"))
     base = 0.9 if version.endswith("2") else 0.6
     # Slight variation with number of examples
@@ -42,7 +68,8 @@ def mock_metrics(prompt_meta: dict, n_examples: int):
     return metrics
 
 
-def main():
+def main() -> None:
+    """Função principal que executa avaliação mock."""
     repo_root = Path(__file__).parent.parent
     prompts_path = repo_root / "prompts" / "bug_to_user_story_v2.yml"
     dataset_path = repo_root / "datasets" / "bug_to_user_story.jsonl"
