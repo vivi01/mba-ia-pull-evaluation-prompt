@@ -258,9 +258,15 @@ python src/pull_prompts.py
 ### 2. Refatorar prompts
 
 Edite manualmente o arquivo `prompts/bug_to_user_story_v2.yml` aplicando as técnicas aprendidas no curso.
+Requisitos do prompt otimizado:
+•	Deve conter instruções claras e específicas
+•	Deve incluir regras explícitas de comportamento
+•	Deve ter exemplos de entrada/saída (Few-shot)
+•	Deve incluir tratamento de edge cases
+•	Deve usar System vs User Prompt adequadamente
 
 ### 3. Fazer push dos prompts otimizados
-
+- Após refatorar os prompts, você deve enviá-los de volta ao LangSmith Prompt Hub.
 ```bash
 python src/push_prompts.py
 ```
@@ -285,7 +291,14 @@ python src/evaluate.py
 
    A) **Seção "Técnicas Aplicadas (Fase 2)"**:
 
-   - Quais técnicas avançadas você escolheu para refatorar os prompts
+   - Aplicar pelo menos duas das seguintes técnicas:
+      o	Few-shot Learning: Fornecer exemplos claros de entrada/saída
+      o	Chain of Thought (CoT): Instruir o modelo a "pensar passo a passo"
+      o	Tree of Thought: Explorar múltiplos caminhos de raciocínio
+      o	Skeleton of Thought: Estruturar a resposta em etapas claras
+      o	ReAct: Raciocínio + Ação para tarefas complexas
+      o	Role Prompting: Definir persona e contexto detalhado
+   - Quais técnicas avançadas você escolheu para refatorar os prompts. 
    - Justificativa de por que escolheu cada técnica
    - Exemplos práticos de como aplicou cada técnica
 
