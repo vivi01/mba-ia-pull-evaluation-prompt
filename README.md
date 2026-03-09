@@ -516,27 +516,33 @@ Use os links abaixo para abrir a tela correta de cada item do checklist:
 
 - `screenshots/langsmith_prompt_hub.png`  
    Fonte: https://smith.langchain.com/hub/viviane-pereira/viviane-pereira
+  <img width="1321" height="865" alt="image" src="https://github.com/user-attachments/assets/cb2c646f-1014-4207-ba45-30a744a08684" />
 
 - `screenshots/langsmith_run_metrics.png`  
    Fonte (compare v2): https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
+  <img width="1701" height="707" alt="image" src="https://github.com/user-attachments/assets/f62901fa-e6a3-4175-ae15-735415cf19ac" />
 
 - `screenshots/langsmith_public_compare_eval.png`  
    Fonte: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d/compare?selectedSessions=ff0f7bce-c172-44ef-9eaf-ddebad3acc51
+  <img width="1663" height="713" alt="image" src="https://github.com/user-attachments/assets/e1c7986a-4ac4-4373-a77a-39f386a3d209" />
 
 - `screenshots/langsmith_public_compare_eval_v2.png`  
    Fonte: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
+  <img width="1666" height="706" alt="image" src="https://github.com/user-attachments/assets/a7d83f9b-974b-4042-bcdc-8c4aa4c9b1ad" />
 
 - `screenshots/langsmith_trace_example_1.png`, `screenshots/langsmith_trace_example_2.png`, `screenshots/langsmith_trace_example_3.png`  
    Fonte: abra uma das páginas de compare acima e clique em linhas diferentes para abrir os traces individuais.
 
 - `screenshots/langsmith_push_idempotent_log.png`  
    Fonte (terminal local): execute `python src/push_prompts.py` e capture a linha com "Prompt sem alterações desde o último commit no Hub. Nenhuma ação necessária (estado já publicado)."
+<img width="1134" height="301" alt="image" src="https://github.com/user-attachments/assets/c4f19b97-b4e3-4c42-a58c-ec700a188882" />
 
 **Comando usado para gerar avaliação final:**
 
 ```bash
 python src/evaluate.py
 ```
+<img width="671" height="496" alt="image" src="https://github.com/user-attachments/assets/5a6eaac7-29d3-4482-af83-7fc89abdbef2" />
 
 ### Roteiro rápido de captura (2–3 minutos)
 
