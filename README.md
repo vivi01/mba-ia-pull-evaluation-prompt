@@ -541,11 +541,11 @@ Use os links abaixo para abrir a tela correta de cada item do checklist:
    Fonte: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d/compare?selectedSessions=ff0f7bce-c172-44ef-9eaf-ddebad3acc51
   <img width="1663" height="713" alt="image" src="https://github.com/user-attachments/assets/e1c7986a-4ac4-4373-a77a-39f386a3d209" />
 
-For the next 3 examples: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
 - `screenshots/langsmith_public_compare_eval_v2.png`  
    Fonte: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
   <img width="1666" height="706" alt="image" src="https://github.com/user-attachments/assets/a7d83f9b-974b-4042-bcdc-8c4aa4c9b1ad" />
-
+  
+For the next 3 examples: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
  - `screenshots/langsmith_trace_example_1.png`  
    Exibe trace completo de um exemplo (entrada + saída + avaliação).
 <img width="1675" height="870" alt="image" src="https://github.com/user-attachments/assets/b3d60717-cab2-40e1-903f-84df20af7cc5" />
