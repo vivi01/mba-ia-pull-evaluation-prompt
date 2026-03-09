@@ -429,7 +429,11 @@ O projeto está integrado com LangSmith para:
 - US (canônico): https://smith.langchain.com/hub/viviane-pereira/viviane-pereira
 - EU (fallback): https://eu.smith.langchain.com/hub/viviane-pereira/viviane-pereira
 
-Observação: evite links no formato `/o/<organization_id>/...`, pois podem retornar 404 dependendo da sessão/região ativa.
+**Datasets de avaliação (organização):**
+- Principal (`-eval`): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/19af14cd-0293-4565-bdbd-1799a1cb6670
+- Secundário (`-eval-v2`): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/ee449d82-1cd8-41de-a0a2-5433232cf942
+
+Observação: para dashboard/datasets, prefira links no formato `/o/<organization_id>/...` no seu workspace.
 
 ---
 
@@ -468,6 +472,7 @@ Avaliação executada: **REAL (LangSmith + LLM)** ✅
 **Resultado final da execução:**
 - Prompt: `viviane-pereira/viviane-pereira`
 - Dataset: `desafio-prompt-engineering_mba-eval` (15 exemplos)
+- Dataset v2: `desafio-prompt-engineering_mba-eval-v2` (15 exemplos)
 - Média: **0.9546** (APROVADO)
 
 ### Checklist objetivo para screenshots do LangSmith
@@ -529,6 +534,10 @@ Dica: mantenha o mesmo zoom/navegador em todas as capturas para padronizar a evi
 **Link do dashboard LangSmith (quando disponível):**
 - Organização (principal): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
 - Após abrir, acessar o projeto: `desafio-prompt-engineering_mba`
+
+**Links diretos dos datasets:**
+- `desafio-prompt-engineering_mba-eval`: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/19af14cd-0293-4565-bdbd-1799a1cb6670
+- `desafio-prompt-engineering_mba-eval-v2`: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/ee449d82-1cd8-41de-a0a2-5433232cf942
 
 **Prompts no Hub:**
 - US (canônico): https://smith.langchain.com/hub/viviane-pereira/viviane-pereira
@@ -700,8 +709,9 @@ OPENAI_API_KEY=sk-...
       - [x] Troubleshooting
 
 3. **Evidências no LangSmith**:
-   - Link: https://smith.langchain.com/
-   - Dataset: `desafio-prompt-engineering_mba-eval` com 15 exemplos
+   - Organização: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
+   - Dataset principal: `desafio-prompt-engineering_mba-eval` (15 exemplos)
+   - Dataset v2: `desafio-prompt-engineering_mba-eval-v2` (15 exemplos)
    - Prompts publicados em seu perfil do LangSmith Hub
 
 ---
