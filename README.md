@@ -486,7 +486,7 @@ Marque como concluído somente se todos os itens visuais estiverem presentes na 
 - [ ] `screenshots/langsmith_project_overview.png`  
    Exibe projeto `desafio-prompt-engineering_mba` e lista de runs.
 - [ ] `screenshots/langsmith_dataset.png`  
-   Exibe dataset `bug_to_user_story_v1` com 15 exemplos.
+   Exibe dataset `bug_to_user_story_v1` com 15 exemplos (página de dataset mostra exemplos, não lista de experimentos).
 - [ ] `screenshots/langsmith_prompt_hub.png`  
    Exibe prompt publicado `viviane-pereira/viviane-pereira` no Hub (visível como público).
 - [ ] `screenshots/langsmith_run_metrics.png`  
@@ -512,7 +512,10 @@ Use os links abaixo para abrir a tela correta de cada item do checklist:
    Fonte: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
 
 - `screenshots/langsmith_dataset.png`  
-   Fonte (dataset v1): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/e67caca1-6997-440e-98cf-84a567e6cbee
+   Fonte (dataset v1 - somente exemplos): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/e67caca1-6997-440e-98cf-84a567e6cbee
+
+- `screenshots/langsmith_public_compare_eval.png` e `screenshots/langsmith_public_compare_eval_v2.png`  
+   Fonte (experimentos/runs): use os links de compare (com `selectedSessions`) abaixo, pois neles os experimentos ficam visíveis.
 
 - `screenshots/langsmith_prompt_hub.png`  
    Fonte: https://smith.langchain.com/hub/viviane-pereira/viviane-pereira
@@ -579,6 +582,12 @@ Dica: mantenha o mesmo zoom/navegador em todas as capturas para padronizar a evi
 **Links diretos dos datasets:**
 - `bug_to_user_story_v1`: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/e67caca1-6997-440e-98cf-84a567e6cbee
 - `bug_to_user_story_v2`: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/38f7fd39-e3ab-48dd-acc5-f562fed8f62b
+
+> Observação: páginas de dataset exibem os exemplos; para visualizar experimentos/runs, use os links de compare público abaixo.
+
+**Links diretos dos experimentos (compare):**
+- `eval v1`: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d/compare?selectedSessions=ff0f7bce-c172-44ef-9eaf-ddebad3acc51
+- `eval v2`: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
 
 **Links públicos dos datasets:**
 - `bug_to_user_story_v1`: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d
