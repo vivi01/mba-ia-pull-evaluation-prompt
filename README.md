@@ -602,28 +602,6 @@ python src/evaluate.py
 
 ### Roteiro rápido de captura (2–3 minutos)
 
-Use esta ordem para gerar todas as evidências sem retrabalho:
-
-1. Abra o projeto no dashboard (`desafio-prompt-engineering_mba`) e capture `screenshots/langsmith_project_overview.png`.
-2. No mesmo projeto, abra o dataset `bug_to_user_story_v1` e capture `screenshots/langsmith_dataset.png`.
-3. Abra o prompt publicado no Hub (`viviane-pereira/viviane-pereira`) e capture `screenshots/langsmith_prompt_hub.png`.
-4. Volte para a execução final do `evaluate.py` e capture a tela de métricas agregadas em `screenshots/langsmith_run_metrics.png`.
-5. Abra os links públicos de compare e capture:
-   - `screenshots/langsmith_public_compare_eval.png`
-   - `screenshots/langsmith_public_compare_eval_v2.png`
-6. Na página da run, abra seis traces diferentes (um por vez) e capture:
-   - **Primeiros 3 exemplos = bug_to_user_story_v2**
-   - `screenshots/langsmith_trace_example_1.png`
-   - `screenshots/langsmith_trace_example_2.png`
-   - `screenshots/langsmith_trace_example_3.png`
-   - **Próximos 3 exemplos = bug_to_user_story_v1**
-   - `screenshots/langsmith_trace_example_4.png`
-   - `screenshots/langsmith_trace_example_5.png`
-   - `screenshots/langsmith_trace_example_6.png`
-7. No terminal após `python src/push_prompts.py`, capture a mensagem de push idempotente em `screenshots/langsmith_push_idempotent_log.png`.
-
-Dica: mantenha o mesmo zoom/navegador em todas as capturas para padronizar a evidência visual do entregável.
-
 ### Checklist operacional (copiar e colar)
 
 ```text
