@@ -5,7 +5,7 @@ Uso:
   python src/run_experiments.py
 
 Config via .env (opcional):
-  EXPERIMENT_DATASET_IDS=19af14cd-0293-4565-bdbd-1799a1cb6670,ee449d82-1cd8-41de-a0a2-5433232cf942
+    EXPERIMENT_DATASET_IDS=e67caca1-6997-440e-98cf-84a567e6cbee,38f7fd39-e3ab-48dd-acc5-f562fed8f62b
   EXPERIMENT_MAX_EXAMPLES=15
   EXPERIMENT_PREFIX=bug-to-user-story
   EVAL_PROMPT_NAME=viviane-pereira/viviane-pereira
@@ -106,7 +106,7 @@ def evaluator_completeness(inputs: Dict[str, Any], outputs: Dict[str, Any], refe
 def _dataset_ids() -> List[str]:
     configured = os.getenv(
         "EXPERIMENT_DATASET_IDS",
-        "19af14cd-0293-4565-bdbd-1799a1cb6670,ee449d82-1cd8-41de-a0a2-5433232cf942",
+        "e67caca1-6997-440e-98cf-84a567e6cbee,38f7fd39-e3ab-48dd-acc5-f562fed8f62b",
     )
     return [item.strip() for item in configured.split(",") if item.strip()]
 

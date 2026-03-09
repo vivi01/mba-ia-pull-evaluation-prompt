@@ -430,8 +430,8 @@ O projeto está integrado com LangSmith para:
 - EU (fallback): https://eu.smith.langchain.com/hub/viviane-pereira/viviane-pereira
 
 **Datasets de avaliação (organização):**
-- Principal (`-eval`): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/19af14cd-0293-4565-bdbd-1799a1cb6670
-- Secundário (`-eval-v2`): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/ee449d82-1cd8-41de-a0a2-5433232cf942
+- `bug_to_user_story_v1`: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/e67caca1-6997-440e-98cf-84a567e6cbee
+- `bug_to_user_story_v2`: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/38f7fd39-e3ab-48dd-acc5-f562fed8f62b
 
 Observação: para dashboard/datasets, prefira links no formato `/o/<organization_id>/...` no seu workspace.
 
@@ -471,13 +471,13 @@ Avaliação executada: **REAL (LangSmith + LLM)** ✅
 
 **Resultado final da execução:**
 - Prompt: `viviane-pereira/viviane-pereira`
-- Dataset: `desafio-prompt-engineering_mba-eval` (15 exemplos)
-- Dataset v2: `desafio-prompt-engineering_mba-eval-v2` (15 exemplos)
+- Dataset: `bug_to_user_story_v1` (15 exemplos)
+- Dataset v2: `bug_to_user_story_v2` (15 exemplos)
 - Média: **0.9546** (APROVADO)
 
 **Experimentos públicos (compare):**
-- Dataset `-eval`: https://smith.langchain.com/public/fb12d9c1-d2ad-4277-a278-013117f220b4/d/compare?selectedSessions=5813c703-14fa-4e16-9ff3-3b3dc4b8693d
-- Dataset `-eval-v2`: https://smith.langchain.com/public/ac64c848-40d2-409d-a790-dc0c4a71e634/d/compare?selectedSessions=2f463bd6-3172-4e75-a8fb-29618978c0a7
+- Dataset `bug_to_user_story_v1`: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d/compare?selectedSessions=ff0f7bce-c172-44ef-9eaf-ddebad3acc51
+- Dataset `bug_to_user_story_v2`: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
 
 ### Checklist objetivo para screenshots do LangSmith
 
@@ -486,7 +486,7 @@ Marque como concluído somente se todos os itens visuais estiverem presentes na 
 - [ ] `screenshots/langsmith_project_overview.png`  
    Exibe projeto `desafio-prompt-engineering_mba` e lista de runs.
 - [ ] `screenshots/langsmith_dataset.png`  
-   Exibe dataset `desafio-prompt-engineering_mba-eval` com 15 exemplos.
+   Exibe dataset `bug_to_user_story_v1` com 15 exemplos.
 - [ ] `screenshots/langsmith_prompt_hub.png`  
    Exibe prompt publicado `viviane-pereira/viviane-pereira` no Hub (visível como público).
 - [ ] `screenshots/langsmith_run_metrics.png`  
@@ -515,7 +515,7 @@ python src/evaluate.py
 Use esta ordem para gerar todas as evidências sem retrabalho:
 
 1. Abra o projeto no dashboard (`desafio-prompt-engineering_mba`) e capture `screenshots/langsmith_project_overview.png`.
-2. No mesmo projeto, abra o dataset `desafio-prompt-engineering_mba-eval` e capture `screenshots/langsmith_dataset.png`.
+2. No mesmo projeto, abra o dataset `bug_to_user_story_v1` e capture `screenshots/langsmith_dataset.png`.
 3. Abra o prompt publicado no Hub (`viviane-pereira/viviane-pereira`) e capture `screenshots/langsmith_prompt_hub.png`.
 4. Volte para a execução final do `evaluate.py` e capture a tela de métricas agregadas em `screenshots/langsmith_run_metrics.png`.
 5. Abra os links públicos de compare e capture:
@@ -549,12 +549,12 @@ Dica: mantenha o mesmo zoom/navegador em todas as capturas para padronizar a evi
 - Após abrir, acessar o projeto: `desafio-prompt-engineering_mba`
 
 **Links diretos dos datasets:**
-- `desafio-prompt-engineering_mba-eval`: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/19af14cd-0293-4565-bdbd-1799a1cb6670
-- `desafio-prompt-engineering_mba-eval-v2`: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/ee449d82-1cd8-41de-a0a2-5433232cf942
+- `bug_to_user_story_v1`: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/e67caca1-6997-440e-98cf-84a567e6cbee
+- `bug_to_user_story_v2`: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/38f7fd39-e3ab-48dd-acc5-f562fed8f62b
 
 **Links públicos dos datasets:**
-- `desafio-prompt-engineering_mba-eval`: https://smith.langchain.com/public/fb12d9c1-d2ad-4277-a278-013117f220b4/d
-- `desafio-prompt-engineering_mba-eval-v2`: https://smith.langchain.com/public/ac64c848-40d2-409d-a790-dc0c4a71e634/d
+- `bug_to_user_story_v1`: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d
+- `bug_to_user_story_v2`: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d
 
 **Prompts no Hub:**
 - US (canônico): https://smith.langchain.com/hub/viviane-pereira/viviane-pereira
@@ -727,8 +727,8 @@ OPENAI_API_KEY=sk-...
 
 3. **Evidências no LangSmith**:
    - Organização: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
-   - Dataset principal: `desafio-prompt-engineering_mba-eval` (15 exemplos)
-   - Dataset v2: `desafio-prompt-engineering_mba-eval-v2` (15 exemplos)
+   - Dataset principal: `bug_to_user_story_v1` (15 exemplos)
+   - Dataset v2: `bug_to_user_story_v2` (15 exemplos)
    - Prompts publicados em seu perfil do LangSmith Hub
 
 ---
