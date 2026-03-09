@@ -231,7 +231,7 @@ desafio-prompt-engineer/
 
 ## Repositórios úteis
 
-- [Repositório boilerplate do desafio](https://github.com/devfullcycle/desafio-prompt-engineer/)
+- [Repositório boilerplate do desafio](https://github.com/devfullcycle/mba-ia-pull-evaluation-prompt)
 - [LangSmith Documentation](https://docs.smith.langchain.com/)
 - [Prompt Engineering Guide](https://www.promptingguide.ai/)
 
@@ -422,8 +422,8 @@ O projeto está integrado com LangSmith para:
 - ✓ Comparar v1 vs v2 sidebyside
 
 **Acesso ao Dashboard:**
-- US (canônico): https://smith.langchain.com/projects/desafio-prompt-engineering_mba
-- EU (fallback): https://eu.smith.langchain.com/projects/desafio-prompt-engineering_mba
+- Organização (principal): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
+- Após abrir, acessar o projeto: `desafio-prompt-engineering_mba`
 
 **Prompt publicado no Hub:**
 - US (canônico): https://smith.langchain.com/hub/viviane-pereira/viviane-pereira
@@ -527,8 +527,8 @@ Dica: mantenha o mesmo zoom/navegador em todas as capturas para padronizar a evi
 ```
 
 **Link do dashboard LangSmith (quando disponível):**
-- US (canônico): https://smith.langchain.com/projects/desafio-prompt-engineering_mba
-- EU (fallback): https://eu.smith.langchain.com/projects/desafio-prompt-engineering_mba
+- Organização (principal): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
+- Após abrir, acessar o projeto: `desafio-prompt-engineering_mba`
 
 **Prompts no Hub:**
 - US (canônico): https://smith.langchain.com/hub/viviane-pereira/viviane-pereira
@@ -578,7 +578,7 @@ mba-ia-pull-evaluation-prompt/
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/seu-username/mba-ia-pull-evaluation-prompt
+git clone https://github.com/devfullcycle/mba-ia-pull-evaluation-prompt
 cd mba-ia-pull-evaluation-prompt
 
 # 2. Crie um ambiente virtual
