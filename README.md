@@ -422,12 +422,14 @@ O projeto está integrado com LangSmith para:
 - ✓ Comparar v1 vs v2 sidebyside
 
 **Acesso ao Dashboard:**
-- Principal: https://smith.langchain.com/projects/desafio-prompt-engineering_mba
-- Alternativo (com `organizationId`): https://smith.langchain.com/projects/desafio-prompt-engineering_mba?organizationId=05cbad01-75e8-484c-ba5f-7323b40af45b
+- US (canônico): https://smith.langchain.com/projects/desafio-prompt-engineering_mba
+- EU (fallback): https://eu.smith.langchain.com/projects/desafio-prompt-engineering_mba
 
 **Prompt publicado no Hub:**
-- Principal: https://smith.langchain.com/prompts/viviane-pereira/viviane-pereira
-- Alternativo (com `organizationId`): https://smith.langchain.com/prompts/viviane-pereira/viviane-pereira?organizationId=05cbad01-75e8-484c-ba5f-7323b40af45b
+- US (canônico): https://smith.langchain.com/hub/viviane-pereira/viviane-pereira
+- EU (fallback): https://eu.smith.langchain.com/hub/viviane-pereira/viviane-pereira
+
+Observação: evite links no formato `/o/<organization_id>/...`, pois podem retornar 404 dependendo da sessão/região ativa.
 
 ---
 
@@ -525,12 +527,12 @@ Dica: mantenha o mesmo zoom/navegador em todas as capturas para padronizar a evi
 ```
 
 **Link do dashboard LangSmith (quando disponível):**
-- Principal: https://smith.langchain.com/projects/desafio-prompt-engineering_mba
-- Alternativo (com `organizationId`): https://smith.langchain.com/projects/desafio-prompt-engineering_mba?organizationId=05cbad01-75e8-484c-ba5f-7323b40af45b
+- US (canônico): https://smith.langchain.com/projects/desafio-prompt-engineering_mba
+- EU (fallback): https://eu.smith.langchain.com/projects/desafio-prompt-engineering_mba
 
 **Prompts no Hub:**
-- Principal: https://smith.langchain.com/prompts/viviane-pereira/viviane-pereira
-- Alternativo (com `organizationId`): https://smith.langchain.com/prompts/viviane-pereira/viviane-pereira?organizationId=05cbad01-75e8-484c-ba5f-7323b40af45b
+- US (canônico): https://smith.langchain.com/hub/viviane-pereira/viviane-pereira
+- EU (fallback): https://eu.smith.langchain.com/hub/viviane-pereira/viviane-pereira
 
 
 ### Estrutura do Projeto
