@@ -582,12 +582,15 @@ Observação: os nomes em `screenshots/...` seguem o padrão de evidência do en
 
 - `screenshots/langsmith_trace_example_4.png`  
    Fonte (trace v1): https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d/compare?selectedSessions=ff0f7bce-c172-44ef-9eaf-ddebad3acc51
+  <img width="1665" height="869" alt="image" src="https://github.com/user-attachments/assets/cbff9256-afbb-43e9-8e03-218ef79b29d9" />
 
 - `screenshots/langsmith_trace_example_5.png`  
    Fonte (trace v1): https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d/compare?selectedSessions=ff0f7bce-c172-44ef-9eaf-ddebad3acc51
+  <img width="1669" height="878" alt="image" src="https://github.com/user-attachments/assets/03125a67-bcc2-4be7-b7e4-ba7f7ced7757" />
 
 - `screenshots/langsmith_trace_example_6.png`  
    Fonte (trace v1): https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d/compare?selectedSessions=ff0f7bce-c172-44ef-9eaf-ddebad3acc51
+  <img width="1676" height="874" alt="image" src="https://github.com/user-attachments/assets/df4b8268-2c4c-47b2-a1aa-b7eceafd0f38" />
 
 - `screenshots/langsmith_push_idempotent_log.png`  
    Fonte (terminal local): execute `python src/push_prompts.py` e capture a linha com "Prompt sem alterações desde o último commit no Hub. Nenhuma ação necessária (estado já publicado)."
