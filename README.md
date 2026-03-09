@@ -475,6 +475,10 @@ Avaliação executada: **REAL (LangSmith + LLM)** ✅
 - Dataset v2: `desafio-prompt-engineering_mba-eval-v2` (15 exemplos)
 - Média: **0.9546** (APROVADO)
 
+**Experimentos públicos (compare):**
+- Dataset `-eval`: https://smith.langchain.com/public/fb12d9c1-d2ad-4277-a278-013117f220b4/d/compare?selectedSessions=5813c703-14fa-4e16-9ff3-3b3dc4b8693d
+- Dataset `-eval-v2`: https://smith.langchain.com/public/ac64c848-40d2-409d-a790-dc0c4a71e634/d/compare?selectedSessions=2f463bd6-3172-4e75-a8fb-29618978c0a7
+
 ### Checklist objetivo para screenshots do LangSmith
 
 Marque como concluído somente se todos os itens visuais estiverem presentes na captura:
@@ -487,6 +491,10 @@ Marque como concluído somente se todos os itens visuais estiverem presentes na 
    Exibe prompt publicado `viviane-pereira/viviane-pereira` no Hub (visível como público).
 - [ ] `screenshots/langsmith_run_metrics.png`  
    Exibe métricas da execução final (Helpfulness, Correctness, F1, Clarity, Precision) com scores >= 0.9.
+- [ ] `screenshots/langsmith_public_compare_eval.png`  
+   Exibe comparação pública do experimento no dataset `-eval` (link público com `selectedSessions`).
+- [ ] `screenshots/langsmith_public_compare_eval_v2.png`  
+   Exibe comparação pública do experimento no dataset `-eval-v2` (link público com `selectedSessions`).
 - [ ] `screenshots/langsmith_trace_example_1.png`  
    Exibe trace completo de um exemplo (entrada + saída + avaliação).
 - [ ] `screenshots/langsmith_trace_example_2.png`  
@@ -510,11 +518,14 @@ Use esta ordem para gerar todas as evidências sem retrabalho:
 2. No mesmo projeto, abra o dataset `desafio-prompt-engineering_mba-eval` e capture `screenshots/langsmith_dataset.png`.
 3. Abra o prompt publicado no Hub (`viviane-pereira/viviane-pereira`) e capture `screenshots/langsmith_prompt_hub.png`.
 4. Volte para a execução final do `evaluate.py` e capture a tela de métricas agregadas em `screenshots/langsmith_run_metrics.png`.
-5. Na página da run, abra três traces diferentes (um por vez) e capture:
+5. Abra os links públicos de compare e capture:
+   - `screenshots/langsmith_public_compare_eval.png`
+   - `screenshots/langsmith_public_compare_eval_v2.png`
+6. Na página da run, abra três traces diferentes (um por vez) e capture:
    - `screenshots/langsmith_trace_example_1.png`
    - `screenshots/langsmith_trace_example_2.png`
    - `screenshots/langsmith_trace_example_3.png`
-6. No terminal após `python src/push_prompts.py`, capture a mensagem de push idempotente em `screenshots/langsmith_push_idempotent_log.png`.
+7. No terminal após `python src/push_prompts.py`, capture a mensagem de push idempotente em `screenshots/langsmith_push_idempotent_log.png`.
 
 Dica: mantenha o mesmo zoom/navegador em todas as capturas para padronizar a evidência visual do entregável.
 
@@ -525,10 +536,12 @@ Dica: mantenha o mesmo zoom/navegador em todas as capturas para padronizar a evi
 [ ] 2) Dataset (15 exemplos) → screenshots/langsmith_dataset.png
 [ ] 3) Prompt no Hub (público) → screenshots/langsmith_prompt_hub.png
 [ ] 4) Run metrics finais (>=0.9) → screenshots/langsmith_run_metrics.png
-[ ] 5) Trace exemplo 1 → screenshots/langsmith_trace_example_1.png
-[ ] 6) Trace exemplo 2 → screenshots/langsmith_trace_example_2.png
-[ ] 7) Trace exemplo 3 → screenshots/langsmith_trace_example_3.png
-[ ] 8) Log de push idempotente (Nothing to commit) → screenshots/langsmith_push_idempotent_log.png
+[ ] 5) Public compare (eval) → screenshots/langsmith_public_compare_eval.png
+[ ] 6) Public compare (eval-v2) → screenshots/langsmith_public_compare_eval_v2.png
+[ ] 7) Trace exemplo 1 → screenshots/langsmith_trace_example_1.png
+[ ] 8) Trace exemplo 2 → screenshots/langsmith_trace_example_2.png
+[ ] 9) Trace exemplo 3 → screenshots/langsmith_trace_example_3.png
+[ ] 10) Log de push idempotente (Nothing to commit) → screenshots/langsmith_push_idempotent_log.png
 ```
 
 **Link do dashboard LangSmith (quando disponível):**
@@ -538,6 +551,10 @@ Dica: mantenha o mesmo zoom/navegador em todas as capturas para padronizar a evi
 **Links diretos dos datasets:**
 - `desafio-prompt-engineering_mba-eval`: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/19af14cd-0293-4565-bdbd-1799a1cb6670
 - `desafio-prompt-engineering_mba-eval-v2`: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/ee449d82-1cd8-41de-a0a2-5433232cf942
+
+**Links públicos dos datasets:**
+- `desafio-prompt-engineering_mba-eval`: https://smith.langchain.com/public/fb12d9c1-d2ad-4277-a278-013117f220b4/d
+- `desafio-prompt-engineering_mba-eval-v2`: https://smith.langchain.com/public/ac64c848-40d2-409d-a790-dc0c4a71e634/d
 
 **Prompts no Hub:**
 - US (canônico): https://smith.langchain.com/hub/viviane-pereira/viviane-pereira
