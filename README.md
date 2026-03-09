@@ -541,12 +541,33 @@ Use os links abaixo para abrir a tela correta de cada item do checklist:
    Fonte: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d/compare?selectedSessions=ff0f7bce-c172-44ef-9eaf-ddebad3acc51
   <img width="1663" height="713" alt="image" src="https://github.com/user-attachments/assets/e1c7986a-4ac4-4373-a77a-39f386a3d209" />
 
+For the next 3 examples: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
 - `screenshots/langsmith_public_compare_eval_v2.png`  
    Fonte: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
   <img width="1666" height="706" alt="image" src="https://github.com/user-attachments/assets/a7d83f9b-974b-4042-bcdc-8c4aa4c9b1ad" />
 
-- `screenshots/langsmith_trace_example_1.png`, `screenshots/langsmith_trace_example_2.png`, `screenshots/langsmith_trace_example_3.png`  
-   Fonte: abra uma das páginas de compare acima e clique em linhas diferentes para abrir os traces individuais.
+ - `screenshots/langsmith_trace_example_1.png`  
+   Exibe trace completo de um exemplo (entrada + saída + avaliação).
+<img width="1675" height="870" alt="image" src="https://github.com/user-attachments/assets/b3d60717-cab2-40e1-903f-84df20af7cc5" />
+
+-  `screenshots/langsmith_trace_example_2.png`  
+   Exibe segundo trace completo.
+   <img width="1671" height="868" alt="image" src="https://github.com/user-attachments/assets/71e69fab-6880-4608-94dd-230a28204ee1" />
+
+-  `screenshots/langsmith_trace_example_3.png`  
+   Exibe terceiro trace completo.
+<img width="1669" height="885" alt="image" src="https://github.com/user-attachments/assets/f075058c-4951-42ba-afba-c422ad574476" />
+
+For the next 3 examples: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d/compare?selectedSessions=ff0f7bce-c172-44ef-9eaf-ddebad3acc51
+
+ - `screenshots/langsmith_trace_example_1.png`
+<img width="1665" height="869" alt="image" src="https://github.com/user-attachments/assets/cbff9256-afbb-43e9-8e03-218ef79b29d9" />
+
+ - `screenshots/langsmith_trace_example_2.png`
+<img width="1669" height="878" alt="image" src="https://github.com/user-attachments/assets/03125a67-bcc2-4be7-b7e4-ba7f7ced7757" />
+   
+-`screenshots/langsmith_trace_example_3.png`
+<img width="1676" height="874" alt="image" src="https://github.com/user-attachments/assets/df4b8268-2c4c-47b2-a1aa-b7eceafd0f38" />
 
 - `screenshots/langsmith_push_idempotent_log.png`  
    Fonte (terminal local): execute `python src/push_prompts.py` e capture a linha com "Prompt sem alterações desde o último commit no Hub. Nenhuma ação necessária (estado já publicado)."
