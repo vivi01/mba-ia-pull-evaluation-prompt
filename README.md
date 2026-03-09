@@ -422,8 +422,14 @@ O projeto está integrado com LangSmith para:
 - ✓ Comparar v1 vs v2 side-by-side
 
 **Acesso ao Dashboard:**
-- Organização (principal): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
+- Organização (principal - acesso interno/workspace): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
 - Após abrir, acessar o projeto: `desafio-prompt-engineering_mba`
+
+**Links públicos (usar estes para avaliação externa):**
+- Compare público v1: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d/compare?selectedSessions=ff0f7bce-c172-44ef-9eaf-ddebad3acc51
+- Compare público v2: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
+- Dataset público v1: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d
+- Dataset público v2: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d
 
 **Prompt publicado no Hub:**
 - US (canônico): https://smith.langchain.com/hub/viviane-pereira/viviane-pereira
@@ -484,7 +490,7 @@ Avaliação executada: **REAL (LangSmith + LLM)** ✅
 Marque como concluído somente se todos os itens visuais estiverem presentes na captura:
 
 - [ ] `screenshots/langsmith_project_overview.png`  
-   Exibe projeto `desafio-prompt-engineering_mba` e lista de runs.
+   Exibe visão geral do projeto `desafio-prompt-engineering_mba` (tracing/runs/prompts). Nesta tela os datasets podem não aparecer.
 - [ ] `screenshots/langsmith_dataset.png`  
    Exibe dataset `bug_to_user_story_v1` com 15 exemplos.
 - [ ] `screenshots/langsmith_prompt_hub.png`  
@@ -509,7 +515,8 @@ Marque como concluído somente se todos os itens visuais estiverem presentes na 
 Use os links abaixo para abrir a tela correta de cada item do checklist:
 
 - `screenshots/langsmith_project_overview.png`  
-   Fonte: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
+   Fonte (interna/workspace): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
+   Observação: esta página é apenas overview do projeto; evidências de datasets devem ser capturadas pelos links de dataset público abaixo.
 
 - `screenshots/langsmith_dataset.png`  
    Fonte (dataset v1):https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d
@@ -583,12 +590,18 @@ Dica: mantenha o mesmo zoom/navegador em todas as capturas para padronizar a evi
 ```
 
 **Link do dashboard LangSmith (quando disponível):**
-- Organização (principal): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
+- Organização (principal - interna/workspace): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
 - Após abrir, acessar o projeto: `desafio-prompt-engineering_mba`
 
+**Links públicos recomendados (sem necessidade de acesso ao workspace):**
+- Compare público v1: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d/compare?selectedSessions=ff0f7bce-c172-44ef-9eaf-ddebad3acc51
+- Compare público v2: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
+- Dataset público v1: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d
+- Dataset público v2: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d
+
 **Links diretos dos datasets:**
-- `bug_to_user_story_v1`: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/e67caca1-6997-440e-98cf-84a567e6cbee
-- `bug_to_user_story_v2`: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/38f7fd39-e3ab-48dd-acc5-f562fed8f62b
+- `bug_to_user_story_v1` (interna/workspace): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/e67caca1-6997-440e-98cf-84a567e6cbee
+- `bug_to_user_story_v2` (interna/workspace): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/38f7fd39-e3ab-48dd-acc5-f562fed8f62b
 
 **Links públicos dos datasets:**
 - `bug_to_user_story_v1`: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d
