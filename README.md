@@ -489,17 +489,17 @@ Avaliação executada: **REAL (LangSmith + LLM)** ✅
 
 Marque como concluído somente se todos os itens visuais estiverem presentes na captura:
 
-- [ ] `screenshots/langsmith_project_overview.png`  
+- [x] `screenshots/langsmith_project_overview.png`  
    Exibe visão geral do projeto `desafio-prompt-engineering_mba` (tracing/runs/prompts). Nesta tela os datasets podem não aparecer.
-- [ ] `screenshots/langsmith_dataset.png`  
+- [x] `screenshots/langsmith_dataset.png`  
    Exibe dataset `bug_to_user_story_v1` com 15 exemplos.
-- [ ] `screenshots/langsmith_prompt_hub.png`  
+- [x] `screenshots/langsmith_prompt_hub.png`  
    Exibe prompt publicado `viviane-pereira/viviane-pereira` no Hub (visível como público).
-- [ ] `screenshots/langsmith_run_metrics.png`  
+- [x] `screenshots/langsmith_run_metrics.png`  
    Exibe métricas da execução final (Helpfulness, Correctness, F1, Clarity, Precision) com scores >= 0.9.
-- [ ] `screenshots/langsmith_public_compare_eval.png`  
+- [x] `screenshots/langsmith_public_compare_eval.png`  
    Exibe comparação pública do experimento no dataset `-eval` (link público com `selectedSessions`).
-- [ ] `screenshots/langsmith_public_compare_eval_v2.png`  
+- [x] `screenshots/langsmith_public_compare_eval_v2.png`  
    Exibe comparação pública do experimento no dataset `-eval-v2` (link público com `selectedSessions`).
 - [ ] `screenshots/langsmith_trace_example_1.png`  
    Exibe trace completo de um exemplo (entrada + saída + avaliação).
@@ -507,8 +507,10 @@ Marque como concluído somente se todos os itens visuais estiverem presentes na 
    Exibe segundo trace completo.
 - [ ] `screenshots/langsmith_trace_example_3.png`  
    Exibe terceiro trace completo.
-- [ ] `screenshots/langsmith_push_idempotent_log.png`  
+- [x] `screenshots/langsmith_push_idempotent_log.png`  
    Exibe evidência do push idempotente: mensagem de "nenhuma ação necessária" / `Nothing to commit`.
+
+Status atual: **7/10 concluídos** (pendente apenas capturar 3 traces individuais).
 
 ### Links de origem para cada screenshot
 
@@ -579,16 +581,16 @@ Dica: mantenha o mesmo zoom/navegador em todas as capturas para padronizar a evi
 ### Checklist operacional (copiar e colar)
 
 ```text
-[ ] 1) Project overview → screenshots/langsmith_project_overview.png
-[ ] 2) Dataset (15 exemplos) → screenshots/langsmith_dataset.png
-[ ] 3) Prompt no Hub (público) → screenshots/langsmith_prompt_hub.png
-[ ] 4) Run metrics finais (>=0.9) → screenshots/langsmith_run_metrics.png
-[ ] 5) Public compare (eval) → screenshots/langsmith_public_compare_eval.png
-[ ] 6) Public compare (eval-v2) → screenshots/langsmith_public_compare_eval_v2.png
+[x] 1) Project overview → screenshots/langsmith_project_overview.png
+[x] 2) Dataset (15 exemplos) → screenshots/langsmith_dataset.png
+[x] 3) Prompt no Hub (público) → screenshots/langsmith_prompt_hub.png
+[x] 4) Run metrics finais (>=0.9) → screenshots/langsmith_run_metrics.png
+[x] 5) Public compare (eval) → screenshots/langsmith_public_compare_eval.png
+[x] 6) Public compare (eval-v2) → screenshots/langsmith_public_compare_eval_v2.png
 [ ] 7) Trace exemplo 1 → screenshots/langsmith_trace_example_1.png
 [ ] 8) Trace exemplo 2 → screenshots/langsmith_trace_example_2.png
 [ ] 9) Trace exemplo 3 → screenshots/langsmith_trace_example_3.png
-[ ] 10) Log de push idempotente (Nothing to commit) → screenshots/langsmith_push_idempotent_log.png
+[x] 10) Log de push idempotente (Nothing to commit) → screenshots/langsmith_push_idempotent_log.png
 ```
 
 **Link do dashboard LangSmith (quando disponível):**
