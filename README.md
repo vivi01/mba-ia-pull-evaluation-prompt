@@ -416,10 +416,10 @@ Avaliação real em `src/evaluate.py`, com dataset de 15 exemplos e execução r
 
 O projeto está integrado com LangSmith para:
 - ✓ Armazenar prompts versionados no Hub
-- ✓ Manter dataset de avaliação centralizado (15 exemplos)
+- ✓ Manter datasets de avaliação centralizados (`-eval` e `-eval-v2`, ambos com 15 exemplos)
 - ✓ Registrar traces de cada execução
 - ✓ Calcular métricas automaticamente
-- ✓ Comparar v1 vs v2 sidebyside
+- ✓ Comparar v1 vs v2 side-by-side
 
 **Acesso ao Dashboard:**
 - Organização (principal): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
@@ -572,7 +572,7 @@ mba-ia-pull-evaluation-prompt/
 
 ---
 
-## Instruções de Execução
+## Guia Detalhado de Execução
 
 ### Pré-requisitos
 
