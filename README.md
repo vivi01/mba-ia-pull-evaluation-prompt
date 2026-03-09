@@ -10,6 +10,19 @@ Você deve entregar um software capaz de:
 4. **Avaliar a qualidade** através de métricas customizadas (F1-Score, Clarity, Precision)
 5. **Atingir pontuação mínima** de 0.9 (90%) em todas as métricas de avaliação
 
+## Sumário
+
+- [Objetivo](#objetivo)
+- [Como Executar](#como-executar)
+- [Técnicas Aplicadas (Fase 2)](#técnicas-aplicadas-fase-2)
+- [Resultados Finais](#resultados-finais)
+- [Dashboard LangSmith](#dashboard-langsmith)
+- [Evidências + Checklist de Capturas](#evidências--checklist-de-capturas)
+- [Guia Detalhado de Execução](#guia-detalhado-de-execução)
+- [Entregável](#entregável)
+- [Resumo das Implementações](#resumo-das-implementações)
+- [Referências e Recursos](#referências-e-recursos)
+
 ---
 
 ## Exemplo no CLI
@@ -91,16 +104,16 @@ from langchain_google_genai import ChatGoogleGenerativeAI  # LLM Gemini
 
 ## Requisitos
 
-### 1. Pull dos Prompt inicial do LangSmith
+### 1. Pull do prompt inicial do LangSmith
 
-O repositório base já contém prompts de **baixa qualidade** publicados no LangSmith Prompt Hub. Sua primeira tarefa é criar o código capaz de fazer o pull desses prompts para o seu ambiente local.
+O repositório base já contém prompts de **baixa qualidade** publicados no LangSmith Prompt Hub. Sua primeira tarefa é criar o código capaz de baixar esses prompts para o ambiente local.
 
 **Tarefas:**
 
 1. Configurar suas credenciais do LangSmith no arquivo `.env` (conforme instruções no `README.md` do repositório base)
-2. Acessar o script `src/pull_prompts.py` que:
+2. Usar o script `src/pull_prompts.py`, que:
    - Conecta ao LangSmith usando suas credenciais
-   - Faz pull do seguinte prompts:
+   - Faz pull do seguinte prompt:
      - `leonanluppi/bug_to_user_story_v1`
    - Salva os prompts localmente em `prompts/raw_prompts.yml`
 
@@ -145,7 +158,7 @@ Após refatorar os prompts, você deve enviá-los de volta ao LangSmith Prompt H
      - `{seu_username}/bug_to_user_story_v2`
    - Adiciona metadados (tags, descrição, técnicas utilizadas)
 2. Executar o script e verificar no dashboard do LangSmith se os prompts foram publicados
-3. Deixa-lo público
+3. Deixá-lo público
 
 ---
 
@@ -206,9 +219,11 @@ desafio-prompt-engineer/
 │   ├── pull_prompts.py       # Pull do LangSmith
 │   ├── push_prompts.py       # Push ao LangSmith
 │   ├── evaluate.py           # Avaliação automática
-│   ├── metrics.py            # 4 métricas implementadas
-│   ├── dataset.py            # 15 exemplos de bugs
+│   ├── metrics.py            # 7 métricas implementadas
 │   └── utils.py              # Funções auxiliares
+│
+├── datasets/
+│   └── bug_to_user_story.jsonl # 15 exemplos de bugs
 │
 ├── tests/
 │   └── test_prompts.py       # Testes de validação
@@ -219,15 +234,15 @@ desafio-prompt-engineer/
 
 - `prompts/bug_to_user_story_v2.yml` - Seu prompt otimizado
 - `tests/test_prompts.py` - Seus testes de validação
-- `src/pull_prompt.py` Script de pull do repositório da fullcycle
-- `src/push_prompt.py` Script de push para o seu repositório
+- `src/pull_prompts.py` - Script de pull do repositório da Full Cycle
+- `src/push_prompts.py` - Script de push para o seu repositório
 - `README.md` - Documentação do seu processo de otimização
 
 **O que já vem pronto:**
 
 - Dataset com 15 bugs (5 simples, 7 médios, 3 complexos)
 - 4 métricas específicas para Bug to User Story
-- Suporte multi-provider (OpenAI e Gemini)
+- Suporte multi-provedor (OpenAI e Gemini)
 
 ## Repositórios úteis
 
@@ -235,7 +250,7 @@ desafio-prompt-engineer/
 - [LangSmith Documentation](https://docs.smith.langchain.com/)
 - [Prompt Engineering Guide](https://www.promptingguide.ai/)
 
-## VirtualEnv para Python
+## Ambiente virtual (Python)
 
 Crie e ative um ambiente virtual antes de instalar dependências:
 
@@ -251,7 +266,7 @@ pip install -r requirements.txt
 
 - **Testes automatizados:** execute `pytest tests/test_prompts.py` para validar a estrutura do prompt otimizado. (6 testes esperados — `test_prompt_has_system_prompt`, `test_prompt_has_role_definition`, `test_prompt_mentions_format`, `test_prompt_has_few_shot_examples`, `test_prompt_no_todos`, `test_minimum_techniques`).
 - **Arquivo validado:** `prompts/bug_to_user_story_v2.yml` contém `description`, `system_prompt`, `version`, `techniques_applied` e exemplos few-shot.
-- **Observação:** A avaliação final via `src/evaluate.py` depende de chaves de API externas (LangSmith, OpenAI ou Google Gemini) e pode falhar por limites de cota. Verifique suas credenciais em `.env` antes de rodar.
+- **Observação:** A avaliação final via `src/evaluate.py` depende de chaves de API externas (LangSmith, OpenAI ou Google Gemini) e pode falhar por limites de cota. Verifique suas credenciais em `.env` antes de executar.
 
 ### Avaliação com limite de tokens (máximo de exemplos)
 
@@ -299,7 +314,7 @@ system_prompt: |
   Você é um Product Manager experiente. Sua tarefa é transformar...
 ```
 
-**Impacto**: Melhora significativamente o tone profissional, clareza e contexto das User Stories geradas.
+**Impacto**: Melhora significativamente o tom profissional, a clareza e o contexto das User Stories geradas.
 
 ---
 
@@ -345,7 +360,7 @@ few_shot_examples:
 
 Fluxo recomendado (end-to-end):
 
-1. **Pull dos prompts base**
+1. **Pull dos prompts de base**
    ```bash
    python src/pull_prompts.py
    ```
@@ -501,20 +516,28 @@ Marque como concluído somente se todos os itens visuais estiverem presentes na 
    Exibe comparação pública do experimento no dataset `-eval` (link público com `selectedSessions`).
 - [x] `screenshots/langsmith_public_compare_eval_v2.png`  
    Exibe comparação pública do experimento no dataset `-eval-v2` (link público com `selectedSessions`).
-- [ ] `screenshots/langsmith_trace_example_1.png`  
+- [x] `screenshots/langsmith_trace_example_1.png`  
    Exibe trace completo de um exemplo (entrada + saída + avaliação).
-- [ ] `screenshots/langsmith_trace_example_2.png`  
+- [x] `screenshots/langsmith_trace_example_2.png`  
    Exibe segundo trace completo.
-- [ ] `screenshots/langsmith_trace_example_3.png`  
+- [x] `screenshots/langsmith_trace_example_3.png`  
    Exibe terceiro trace completo.
+- [x] `screenshots/langsmith_trace_example_4.png`  
+   Exibe quarto trace completo (v1).
+- [x] `screenshots/langsmith_trace_example_5.png`  
+   Exibe quinto trace completo (v1).
+- [x] `screenshots/langsmith_trace_example_6.png`  
+   Exibe sexto trace completo (v1).
 - [x] `screenshots/langsmith_push_idempotent_log.png`  
    Exibe evidência do push idempotente: mensagem de "nenhuma ação necessária" / `Nothing to commit`.
 
-Status atual: **7/10 concluídos** (pendente apenas capturar 3 traces individuais).
+Status atual: **13/13 concluídos** ✅
 
 ### Links de origem para cada screenshot
 
 Use os links abaixo para abrir a tela correta de cada item do checklist:
+
+Observação: os nomes em `screenshots/...` seguem o padrão de evidência do entregável; as imagens podem estar embutidas no README via links do GitHub user-attachments.
 
 - `screenshots/langsmith_project_overview.png`  
    Fonte (interna/workspace): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
@@ -523,7 +546,7 @@ Use os links abaixo para abrir a tela correta de cada item do checklist:
 
 
 - `screenshots/langsmith_dataset.png`  
-   Fonte (dataset v1):https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d
+   Fonte (dataset v1): https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d
   <img width="1667" height="617" alt="image" src="https://github.com/user-attachments/assets/92899c11-211c-4ba9-b9e2-7b6a2ec0c309" />
 
   Fonte (dataset v2): https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d
@@ -544,30 +567,27 @@ Use os links abaixo para abrir a tela correta de cada item do checklist:
 - `screenshots/langsmith_public_compare_eval_v2.png`  
    Fonte: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
   <img width="1666" height="706" alt="image" src="https://github.com/user-attachments/assets/a7d83f9b-974b-4042-bcdc-8c4aa4c9b1ad" />
-  
-For the next 3 examples bug_user_story-v2: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
- - `screenshots/langsmith_trace_example_1.png`  
-   Exibe trace completo de um exemplo (entrada + saída + avaliação).
-<img width="1675" height="870" alt="image" src="https://github.com/user-attachments/assets/b3d60717-cab2-40e1-903f-84df20af7cc5" />
 
--  `screenshots/langsmith_trace_example_2.png`  
-   Exibe segundo trace completo.
+- `screenshots/langsmith_trace_example_1.png`  
+   Fonte (trace v2): https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
+  <img width="1675" height="870" alt="image" src="https://github.com/user-attachments/assets/b3d60717-cab2-40e1-903f-84df20af7cc5" />
+
+- `screenshots/langsmith_trace_example_2.png`  
+   Fonte (trace v2): https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
    <img width="1671" height="868" alt="image" src="https://github.com/user-attachments/assets/71e69fab-6880-4608-94dd-230a28204ee1" />
 
--  `screenshots/langsmith_trace_example_3.png`  
-   Exibe terceiro trace completo.
-<img width="1669" height="885" alt="image" src="https://github.com/user-attachments/assets/f075058c-4951-42ba-afba-c422ad574476" />
+- `screenshots/langsmith_trace_example_3.png`  
+   Fonte (trace v2): https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
+  <img width="1669" height="885" alt="image" src="https://github.com/user-attachments/assets/f075058c-4951-42ba-afba-c422ad574476" />
 
-For the next 3 examples bug_user_story-v1: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d/compare?selectedSessions=ff0f7bce-c172-44ef-9eaf-ddebad3acc51
+- `screenshots/langsmith_trace_example_4.png`  
+   Fonte (trace v1): https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d/compare?selectedSessions=ff0f7bce-c172-44ef-9eaf-ddebad3acc51
 
- - `screenshots/langsmith_trace_example_1.png`
-<img width="1665" height="869" alt="image" src="https://github.com/user-attachments/assets/cbff9256-afbb-43e9-8e03-218ef79b29d9" />
+- `screenshots/langsmith_trace_example_5.png`  
+   Fonte (trace v1): https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d/compare?selectedSessions=ff0f7bce-c172-44ef-9eaf-ddebad3acc51
 
- - `screenshots/langsmith_trace_example_2.png`
-<img width="1669" height="878" alt="image" src="https://github.com/user-attachments/assets/03125a67-bcc2-4be7-b7e4-ba7f7ced7757" />
-   
--`screenshots/langsmith_trace_example_3.png`
-<img width="1676" height="874" alt="image" src="https://github.com/user-attachments/assets/df4b8268-2c4c-47b2-a1aa-b7eceafd0f38" />
+- `screenshots/langsmith_trace_example_6.png`  
+   Fonte (trace v1): https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d/compare?selectedSessions=ff0f7bce-c172-44ef-9eaf-ddebad3acc51
 
 - `screenshots/langsmith_push_idempotent_log.png`  
    Fonte (terminal local): execute `python src/push_prompts.py` e capture a linha com "Prompt sem alterações desde o último commit no Hub. Nenhuma ação necessária (estado já publicado)."
@@ -591,10 +611,15 @@ Use esta ordem para gerar todas as evidências sem retrabalho:
 5. Abra os links públicos de compare e capture:
    - `screenshots/langsmith_public_compare_eval.png`
    - `screenshots/langsmith_public_compare_eval_v2.png`
-6. Na página da run, abra três traces diferentes (um por vez) e capture:
+6. Na página da run, abra seis traces diferentes (um por vez) e capture:
+   - **Primeiros 3 exemplos = bug_to_user_story_v2**
    - `screenshots/langsmith_trace_example_1.png`
    - `screenshots/langsmith_trace_example_2.png`
    - `screenshots/langsmith_trace_example_3.png`
+   - **Próximos 3 exemplos = bug_to_user_story_v1**
+   - `screenshots/langsmith_trace_example_4.png`
+   - `screenshots/langsmith_trace_example_5.png`
+   - `screenshots/langsmith_trace_example_6.png`
 7. No terminal após `python src/push_prompts.py`, capture a mensagem de push idempotente em `screenshots/langsmith_push_idempotent_log.png`.
 
 Dica: mantenha o mesmo zoom/navegador em todas as capturas para padronizar a evidência visual do entregável.
@@ -608,62 +633,16 @@ Dica: mantenha o mesmo zoom/navegador em todas as capturas para padronizar a evi
 [x] 4) Run metrics finais (>=0.9) → screenshots/langsmith_run_metrics.png
 [x] 5) Public compare (eval) → screenshots/langsmith_public_compare_eval.png
 [x] 6) Public compare (eval-v2) → screenshots/langsmith_public_compare_eval_v2.png
-[ ] 7) Trace exemplo 1 → screenshots/langsmith_trace_example_1.png
-[ ] 8) Trace exemplo 2 → screenshots/langsmith_trace_example_2.png
-[ ] 9) Trace exemplo 3 → screenshots/langsmith_trace_example_3.png
-[x] 10) Log de push idempotente (Nothing to commit) → screenshots/langsmith_push_idempotent_log.png
+[x] 7) Trace exemplo 1 → screenshots/langsmith_trace_example_1.png
+[x] 8) Trace exemplo 2 → screenshots/langsmith_trace_example_2.png
+[x] 9) Trace exemplo 3 → screenshots/langsmith_trace_example_3.png
+[x] 10) Trace exemplo 4 (v1) → screenshots/langsmith_trace_example_4.png
+[x] 11) Trace exemplo 5 (v1) → screenshots/langsmith_trace_example_5.png
+[x] 12) Trace exemplo 6 (v1) → screenshots/langsmith_trace_example_6.png
+[x] 13) Log de push idempotente (Nothing to commit) → screenshots/langsmith_push_idempotent_log.png
 ```
 
-**Link do dashboard LangSmith (quando disponível):**
-- Organização (principal - interna/workspace): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
-- Após abrir, acessar o projeto: `desafio-prompt-engineering_mba`
-
-**Links públicos recomendados (sem necessidade de acesso ao workspace):**
-- Compare público v1: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d/compare?selectedSessions=ff0f7bce-c172-44ef-9eaf-ddebad3acc51
-- Compare público v2: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
-- Dataset público v1: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d
-- Dataset público v2: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d
-
-**Links diretos dos datasets:**
-- `bug_to_user_story_v1` (interna/workspace): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/e67caca1-6997-440e-98cf-84a567e6cbee
-- `bug_to_user_story_v2` (interna/workspace): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/38f7fd39-e3ab-48dd-acc5-f562fed8f62b
-
-**Links públicos dos datasets:**
-- `bug_to_user_story_v1`: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d
-- `bug_to_user_story_v2`: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d
-
-**Prompts no Hub:**
-- US (canônico): https://smith.langchain.com/hub/viviane-pereira/viviane-pereira
-- EU (fallback): https://eu.smith.langchain.com/hub/viviane-pereira/viviane-pereira
-
-
-### Estrutura do Projeto
-
-```
-mba-ia-pull-evaluation-prompt/
-├── prompts/
-│   ├── bug_to_user_story_v1.yml    # Original (após pull)
-│   └── bug_to_user_story_v2.yml    # Otimizado (v2)
-│
-├── datasets/
-│   └── bug_to_user_story.jsonl     # 15 exemplos para avaliação
-│
-├── src/
-│   ├── pull_prompts.py             # Pull de prompts do Hub
-│   ├── push_prompts.py             # Push ao Hub
-│   ├── evaluate.py                 # Pipeline de avaliação (7 métricas)
-│   ├── metrics.py                  # Implementação das 7 avaliadores
-│   └── utils.py                    # Funções auxiliares
-│
-├── tests/
-│   └── test_prompts.py             # 6 testes de validação
-│
-├── requirements.txt                # Dependências Python
-├── .env                            # Variáveis de ambiente
-└── README.md                       # Este arquivo
-```
-
----
+Para links oficiais do dashboard/datasets/Hub, consulte a seção **Dashboard LangSmith** acima.
 
 ## Guia Detalhado de Execução
 
@@ -676,7 +655,7 @@ mba-ia-pull-evaluation-prompt/
   - `LANGSMITH_API_KEY` (obrigatório)
   - `OPENAI_API_KEY` ou `GOOGLE_API_KEY` (para LLM)
 
-### Setup Inicial
+### Configuração Inicial
 
 ```bash
 # 1. Clone o repositório
@@ -696,15 +675,17 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # 5. Configure as variáveis de ambiente
-# Copie .env.example para .env e preencha suas chaves
-cp .env.example .env
+# No Windows (PowerShell):
+Copy-Item .env.example .env
+# No Linux/Mac:
+# cp .env.example .env
 
 # Configure no arquivo .env:
 LANGSMITH_API_KEY=lsv2_pt_...
 OPENAI_API_KEY=sk-...  # OU
 GOOGLE_API_KEY=AIzaSy...
 
-# Escolha um provider (recomendado: openai para melhor quota)
+# Escolha um provedor (recomendado: openai para melhor cota)
 LLM_PROVIDER=openai
 ```
 
@@ -755,7 +736,7 @@ LANGSMITH_API_KEY=lsv2_pt_seu_token_aqui
 
 #### Problema: "Quota excedida do Gemini Free"
 ```bash
-# Google Gemini Free Tier: 20 req/dia
+# Limites do plano free podem variar ao longo do tempo
 # Solução: Trocar para OpenAI
 # No .env:
 LLM_PROVIDER=openai
