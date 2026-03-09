@@ -512,12 +512,11 @@ Use os links abaixo para abrir a tela correta de cada item do checklist:
    Fonte: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
 
 - `screenshots/langsmith_dataset.png`  
-   Fonte (dataset v1): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/e67caca1-6997-440e-98cf-84a567e6cbee](https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d
+   Fonte (dataset v1):https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d
   <img width="1667" height="617" alt="image" src="https://github.com/user-attachments/assets/92899c11-211c-4ba9-b9e2-7b6a2ec0c309" />
 
-  Fonte (dataset v2): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/e67caca1-6997-440e-98cf-84a567e6cbee](https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d
-  <img width="1667" height="617" alt="image" src="https://github.com/user-attachments/assets/92899c11-211c-4ba9-b9e2-7b6a2ec0c309" />
-
+  Fonte (dataset v2): https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d
+ <img width="1672" height="647" alt="image" src="https://github.com/user-attachments/assets/c710b37e-b434-4de8-a2a0-bbb265d6c36a" />
 
 - `screenshots/langsmith_prompt_hub.png`  
    Fonte: https://smith.langchain.com/hub/viviane-pereira/viviane-pereira
