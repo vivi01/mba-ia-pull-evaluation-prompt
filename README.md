@@ -517,6 +517,8 @@ Use os links abaixo para abrir a tela correta de cada item do checklist:
 - `screenshots/langsmith_project_overview.png`  
    Fonte (interna/workspace): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
    Observação: esta página é apenas overview do projeto; evidências de datasets devem ser capturadas pelos links de dataset público abaixo.
+  <img width="1660" height="883" alt="image" src="https://github.com/user-attachments/assets/b675599a-eff4-4503-92c6-92a5a4ede8d0" />
+
 
 - `screenshots/langsmith_dataset.png`  
    Fonte (dataset v1):https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d
