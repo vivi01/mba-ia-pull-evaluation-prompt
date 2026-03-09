@@ -504,6 +504,34 @@ Marque como concluído somente se todos os itens visuais estiverem presentes na 
 - [ ] `screenshots/langsmith_push_idempotent_log.png`  
    Exibe evidência do push idempotente: mensagem de "nenhuma ação necessária" / `Nothing to commit`.
 
+### Links de origem para cada screenshot
+
+Use os links abaixo para abrir a tela correta de cada item do checklist:
+
+- `screenshots/langsmith_project_overview.png`  
+   Fonte: https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b
+
+- `screenshots/langsmith_dataset.png`  
+   Fonte (dataset v1): https://smith.langchain.com/o/05cbad01-75e8-484c-ba5f-7323b40af45b/datasets/e67caca1-6997-440e-98cf-84a567e6cbee
+
+- `screenshots/langsmith_prompt_hub.png`  
+   Fonte: https://smith.langchain.com/hub/viviane-pereira/viviane-pereira
+
+- `screenshots/langsmith_run_metrics.png`  
+   Fonte (compare v2): https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
+
+- `screenshots/langsmith_public_compare_eval.png`  
+   Fonte: https://smith.langchain.com/public/0986a4fd-90f6-4ac1-be94-e033d966ec3f/d/compare?selectedSessions=ff0f7bce-c172-44ef-9eaf-ddebad3acc51
+
+- `screenshots/langsmith_public_compare_eval_v2.png`  
+   Fonte: https://smith.langchain.com/public/2fccd07c-4090-474a-a179-355dfb4d7526/d/compare?selectedSessions=73aabcf6-c326-413d-89a1-7c383b94a505
+
+- `screenshots/langsmith_trace_example_1.png`, `screenshots/langsmith_trace_example_2.png`, `screenshots/langsmith_trace_example_3.png`  
+   Fonte: abra uma das páginas de compare acima e clique em linhas diferentes para abrir os traces individuais.
+
+- `screenshots/langsmith_push_idempotent_log.png`  
+   Fonte (terminal local): execute `python src/push_prompts.py` e capture a linha com "Prompt sem alterações desde o último commit no Hub. Nenhuma ação necessária (estado já publicado)."
+
 **Comando usado para gerar avaliação final:**
 
 ```bash
