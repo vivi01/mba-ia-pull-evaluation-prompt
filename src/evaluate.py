@@ -34,10 +34,58 @@ from utils import check_env_vars, format_score, get_llm as get_configured_llm
 
 load_dotenv()
 
+logging.basicConfig(level=logging.INFO, format="%(message)s")
+logger = logging.getLogger(__name__)
+
 
 def get_llm() -> Any:
     """Retorna o LLM configurado com temperatura 0 para consistência."""
     return get_configured_llm(temperature=0)
+
+
+def _estimate_tokens(text: str) -> int:
+    """Estimativa simples de tokens (aprox. 4 chars/token)."""
+    if not text:
+        return 0
+    return max(1, len(text) // 4)
+
+
+def _estimate_example_eval_tokens(example: Any) -> int:
+    """Estimativa conservadora de tokens consumidos por exemplo na avaliação.
+
+    Considera:
+    - 1 chamada para gerar resposta do prompt
+    - 3 chamadas para métricas (F1, Clarity, Precision)
+    - overhead fixo de instruções/sistema
+    """
+    inputs = example.inputs if hasattr(example, "inputs") and isinstance(example.inputs, dict) else {}
+    outputs = example.outputs if hasattr(example, "outputs") and isinstance(example.outputs, dict) else {}
+
+    bug_report = str(inputs.get("bug_report", inputs.get("question", "")))
+    reference = str(outputs.get("reference", ""))
+
+    content_tokens = _estimate_tokens(bug_report) + _estimate_tokens(reference)
+    prompt_and_overhead = 1200
+    estimated_total = (content_tokens + prompt_and_overhead) * 4
+    return max(estimated_total, 2000)
+
+
+def _select_examples_by_token_budget(examples: List[Any], token_limit: int, reserve: int) -> tuple[int, int]:
+    """Retorna quantidade máxima de exemplos que cabe no orçamento de tokens."""
+    available = max(1, token_limit - max(0, reserve))
+    consumed = 0
+    count = 0
+
+    for example in examples:
+        estimated = _estimate_example_eval_tokens(example)
+        if count > 0 and consumed + estimated > available:
+            break
+        if count == 0 and estimated > available:
+            return 1, estimated
+        consumed += estimated
+        count += 1
+
+    return max(1, count), consumed
 
 
 def load_dataset_from_jsonl(jsonl_path: str) -> List[Dict[str, Any]]:
@@ -234,7 +282,48 @@ def evaluate_prompt(prompt_name: str, dataset_name: str, client: Client) -> Dict
         prompt_template = pull_prompt_from_langsmith(prompt_name)
 
         examples = list(client.list_examples(dataset_name=dataset_name))
-        print(f"   Dataset: {len(examples)} exemplos")
+        total_examples = len(examples)
+        print(f"   Dataset: {total_examples} exemplos")
+
+        provider = os.getenv("LLM_PROVIDER", "openai").lower()
+        default_max_examples = 2 if provider in ["google", "gemini"] else 10
+
+        max_examples_env = os.getenv("EVAL_MAX_EXAMPLES")
+        token_limit_env = os.getenv("EVAL_TOKEN_LIMIT")
+        token_reserve_env = os.getenv("EVAL_TOKEN_RESERVE", "5000")
+
+        max_examples = default_max_examples
+
+        if token_limit_env:
+            try:
+                token_limit = int(token_limit_env)
+                token_reserve = int(token_reserve_env)
+                max_by_budget, estimated_consumption = _select_examples_by_token_budget(
+                    examples, token_limit, token_reserve
+                )
+                max_examples = max_by_budget
+                print(
+                    f"   Orçamento de tokens ativo: limite={token_limit}, reserva={token_reserve}, "
+                    f"estimativa={estimated_consumption}"
+                )
+            except ValueError:
+                print("   ⚠️  EVAL_TOKEN_LIMIT inválido; usando seleção padrão por provider")
+
+        if max_examples_env:
+            try:
+                manual_cap = int(max_examples_env)
+                if manual_cap > 0:
+                    max_examples = min(max_examples, manual_cap)
+            except ValueError:
+                pass
+
+        if max_examples < 1:
+            max_examples = 1
+
+        selected_examples = examples[:max_examples]
+        estimated_calls = len(selected_examples) * 4
+        print(f"   Avaliando {len(selected_examples)}/{total_examples} exemplos (EVAL_MAX_EXAMPLES={max_examples})")
+        print(f"   Estimativa de chamadas LLM: ~{estimated_calls} por prompt")
 
         llm = get_llm()
 
@@ -244,7 +333,7 @@ def evaluate_prompt(prompt_name: str, dataset_name: str, client: Client) -> Dict
 
         print("   Avaliando exemplos...")
 
-        for i, example in enumerate(examples[:10], 1):
+        for i, example in enumerate(selected_examples, 1):
             result = evaluate_prompt_on_example(prompt_template, example, llm)
 
             if result["answer"]:
@@ -256,7 +345,7 @@ def evaluate_prompt(prompt_name: str, dataset_name: str, client: Client) -> Dict
                 clarity_scores.append(clarity["score"])
                 precision_scores.append(precision["score"])
 
-                print(f"      [{i}/{min(10, len(examples))}] F1:{f1['score']:.2f} Clarity:{clarity['score']:.2f} Precision:{precision['score']:.2f}")
+                print(f"      [{i}/{len(selected_examples)}] F1:{f1['score']:.2f} Clarity:{clarity['score']:.2f} Precision:{precision['score']:.2f}")
 
         avg_f1 = sum(f1_scores) / len(f1_scores) if f1_scores else 0.0
         avg_clarity = sum(clarity_scores) / len(clarity_scores) if clarity_scores else 0.0
@@ -371,9 +460,8 @@ def main() -> int:
     print("Certifique-se de ter feito push dos prompts antes de avaliar:")
     print("  python src/push_prompts.py\n")
 
-    prompts_to_evaluate = [
-        "bug_to_user_story_v2",
-    ]
+    prompt_to_evaluate = os.getenv("EVAL_PROMPT_NAME") or os.getenv("PUSH_PROMPT_NAME") or "bug_to_user_story_v2"
+    prompts_to_evaluate = [prompt_to_evaluate]
 
     all_passed = True
     evaluated_count = 0

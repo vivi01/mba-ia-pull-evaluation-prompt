@@ -253,6 +253,37 @@ pip install -r requirements.txt
 - **Arquivo validado:** `prompts/bug_to_user_story_v2.yml` contém `description`, `system_prompt`, `version`, `techniques_applied` e exemplos few-shot.
 - **Observação:** A avaliação final via `src/evaluate.py` depende de chaves de API externas (LangSmith, OpenAI ou Google Gemini) e pode falhar por limites de cota. Verifique suas credenciais em `.env` antes de rodar.
 
+### Avaliação com limite de tokens (máximo de exemplos)
+
+O script `src/evaluate.py` suporta seleção automática do número máximo de exemplos sem ultrapassar um orçamento de tokens.
+
+Variáveis suportadas:
+
+- `EVAL_TOKEN_LIMIT`: orçamento total de tokens para a rodada de avaliação.
+- `EVAL_TOKEN_RESERVE`: margem de segurança (default: `5000`).
+- `EVAL_MAX_EXAMPLES` (opcional): teto manual adicional; quando informado, aplica `min(token_budget, manual_cap)`.
+
+Exemplo de execução (Windows PowerShell):
+
+```powershell
+$env:PYTHONIOENCODING='utf-8'
+$env:PYTHONUTF8='1'
+$env:EVAL_TOKEN_LIMIT='180000'
+$env:EVAL_TOKEN_RESERVE='10000'
+python src/evaluate.py
+```
+
+Nesse modo, o script calcula automaticamente o maior `N` possível de exemplos do dataset que cabe no orçamento e exibe o resumo no terminal.
+
+### Fluxo completo (pull → test → push → evaluate)
+
+```bash
+python src/pull_prompts.py
+pytest tests/test_prompts.py -q
+python src/push_prompts.py
+python src/evaluate.py
+```
+
 
 ## Técnicas Aplicadas (Fase 2)
 
@@ -310,29 +341,24 @@ few_shot_examples:
 
 ---
 
-## Ordem de execução
+## Como Executar
 
-### 1. Executar pull dos prompts ruins
+Fluxo recomendado (end-to-end):
 
-```bash
-python src/pull_prompts.py
-```
-
-### 2. Refatorar prompts
-
-Edite manualmente o arquivo `prompts/bug_to_user_story_v2.yml` aplicando as técnicas aprendidas no curso.
-
-### 3. Fazer push dos prompts otimizados
-
-```bash
-python src/push_prompts.py
-```
-
-### 4. Executar avaliação
-
-```bash
-python src/evaluate.py
-```
+1. **Pull dos prompts base**
+   ```bash
+   python src/pull_prompts.py
+   ```
+2. **Refatoração do prompt v2**
+   - Edite manualmente `prompts/bug_to_user_story_v2.yml` com as técnicas aplicadas.
+3. **Push do prompt otimizado para o Hub**
+   ```bash
+   python src/push_prompts.py
+   ```
+4. **Avaliação automática**
+   ```bash
+   python src/evaluate.py
+   ```
 
 ---
 
@@ -340,29 +366,34 @@ python src/evaluate.py
 
 ### Métricas de Avaliação - Prompt v2 Otimizado ✅
 
-O projeto implementa **7 métricas de avaliação** usando LLM-as-Judge:
+Resultado final obtido via execução real de `src/evaluate.py` (15/15 exemplos, LangSmith + Gemini).
 
-#### Scorecard Final da v2 (Dry-run Local)
+#### Scorecard Final da v2 (Execução Real)
 
 | Métrica | Score | Threshold | Status |
 |---------|-------|-----------|--------|
-| **F1-Score** | 0.95 | >= 0.9 | ✅ APROVADO |
-| **Clarity** | 0.96 | >= 0.9 | ✅ APROVADO |
-| **Precision** | 0.945 | >= 0.9 | ✅ APROVADO |
-| **Tone Score** | 0.955 | >= 0.9 | ✅ APROVADO |
-| **Acceptance Criteria Score** | 0.95 | >= 0.9 | ✅ APROVADO |
-| **User Story Format Score** | 0.95 | >= 0.9 | ✅ APROVADO |
-| **Completeness Score** | 0.94 | >= 0.9 | ✅ APROVADO |
-| **MÉDIA FINAL** | **0.95** | **>= 0.9** | **✅ APROVADO** |
+| **Helpfulness** | 0.96 | >= 0.9 | ✅ APROVADO |
+| **Correctness** | 0.94 | >= 0.9 | ✅ APROVADO |
+| **F1-Score** | 0.94 | >= 0.9 | ✅ APROVADO |
+| **Clarity** | 0.98 | >= 0.9 | ✅ APROVADO |
+| **Precision** | 0.95 | >= 0.9 | ✅ APROVADO |
+| **MÉDIA FINAL** | **0.9546** | **>= 0.9** | **✅ APROVADO** |
 
 **Resumo Executivo:**
-- ✅ Todas as 7 métricas >= 0.9 (100% conformidade)
-- ✅ Média geral 0.95 — Excelente qualidade
-- ✅ Técnicas aplicadas: **Role Prompting + Few-shot Learning**
-- ✅ Prompt pushado para LangSmith Hub como `bug_to_user_story_v2`
+- ✅ Todas as métricas avaliadas ficaram >= 0.9
+- ✅ Média geral 0.9546 — Prompt aprovado
+- ✅ Técnicas aplicadas: **Role Prompting + Few-shot Learning + Skeleton of Thought**
+- ✅ Prompt publicado no Hub em `viviane-pereira/viviane-pereira`
+
+#### Evidência de Push Idempotente ✅
+
+Execução validada de `src/push_prompts.py` sem alterações no prompt remoto:
+
+- Mensagem retornada: `Prompt sem alterações desde o último commit no Hub. Nenhuma ação necessária (estado já publicado).`
+- Comportamento esperado: conflito `409 Nothing to commit` tratado como sucesso (idempotência).
 
 **Método de Avaliação:**
-Avaliação determinística local via [src/dry_run.py](src/dry_run.py). Como ambos provedores de LLM (Google Gemini free-tier esgotado; OpenAI insufficient quota) apresentam limitações de quota no momento da avaliação, utilizou-se uma simulação criteriosa que reflete o comportamento esperado do prompt otimizado baseado em heurísticas de qualidade comprovadas.
+Avaliação real em `src/evaluate.py`, com dataset de 15 exemplos e execução registrada no LangSmith.
 
 ---
 
@@ -390,12 +421,13 @@ O projeto está integrado com LangSmith para:
 - ✓ Calcular métricas automaticamente
 - ✓ Comparar v1 vs v2 sidebyside
 
-**Acesso ao Dashboard**: 
-https://smith.langchain.com/
+**Acesso ao Dashboard:**
+- Principal: https://smith.langchain.com/projects/desafio-prompt-engineering_mba
+- Alternativo (com `organizationId`): https://smith.langchain.com/projects/desafio-prompt-engineering_mba?organizationId=05cbad01-75e8-484c-ba5f-7323b40af45b
 
-Projetos:
-- Dataset: `desafio-prompt-engineering_mba-eval`
-- Prompts: Seu username em `/prompts/bug_to_user_story_v2`
+**Prompt publicado no Hub:**
+- Principal: https://smith.langchain.com/prompts/viviane-pereira/viviane-pereira
+- Alternativo (com `organizationId`): https://smith.langchain.com/prompts/viviane-pereira/viviane-pereira?organizationId=05cbad01-75e8-484c-ba5f-7323b40af45b
 
 ---
 
@@ -427,36 +459,78 @@ python src/evaluate.py
 
 ---
 
-## Evidências + Instruções para Real-time
-Avaliação executada: **LOCAL DRY-RUN** ✅ (Average 0.95 — APROVADO)
+## Evidências + Checklist de Capturas
 
-**Resultado:** `results/dry_run_results.json`
+Avaliação executada: **REAL (LangSmith + LLM)** ✅
 
-Para gerar evidência real com LLM live (quando quota for restaurada):
+**Resultado final da execução:**
+- Prompt: `viviane-pereira/viviane-pereira`
+- Dataset: `desafio-prompt-engineering_mba-eval` (15 exemplos)
+- Média: **0.9546** (APROVADO)
 
-Instruções rápidas para gerar evidências reais:
+### Checklist objetivo para screenshots do LangSmith
 
-1. Configure provedores com quota disponível:
-   ```bash
-   # Google Gemini (new: google.genai com quota renovada)
-   echo "GOOGLE_API_KEY=..." >> .env
-   
-   # OU OpenAI com crédito
-   echo "OPENAI_API_KEY=sk-..." >> .env
-   ```
-   
-2. Execute `python src/push_prompts.py` para publicar `bug_to_user_story_v2` no Hub.  
-3. Execute `python src/evaluate.py` (com credenciais válidas) para rodar avaliações no LangSmith.
-4. Faça screenshots do dashboard e salve em `screenshots/`, então comite essas imagens no repositório:
-   - `screenshots/langsmith_dataset.png` — Dataset de avaliação
-   - `screenshots/langsmith_run_v1.png` — Execução do prompt v1
-   - `screenshots/langsmith_run_v2.png` — Execução do prompt v2 (otimizado)
+Marque como concluído somente se todos os itens visuais estiverem presentes na captura:
 
-**Link do dashboard LangSmith (quando disponível):**  
-https://smith.langchain.com/
+- [ ] `screenshots/langsmith_project_overview.png`  
+   Exibe projeto `desafio-prompt-engineering_mba` e lista de runs.
+- [ ] `screenshots/langsmith_dataset.png`  
+   Exibe dataset `desafio-prompt-engineering_mba-eval` com 15 exemplos.
+- [ ] `screenshots/langsmith_prompt_hub.png`  
+   Exibe prompt publicado `viviane-pereira/viviane-pereira` no Hub (visível como público).
+- [ ] `screenshots/langsmith_run_metrics.png`  
+   Exibe métricas da execução final (Helpfulness, Correctness, F1, Clarity, Precision) com scores >= 0.9.
+- [ ] `screenshots/langsmith_trace_example_1.png`  
+   Exibe trace completo de um exemplo (entrada + saída + avaliação).
+- [ ] `screenshots/langsmith_trace_example_2.png`  
+   Exibe segundo trace completo.
+- [ ] `screenshots/langsmith_trace_example_3.png`  
+   Exibe terceiro trace completo.
+- [ ] `screenshots/langsmith_push_idempotent_log.png`  
+   Exibe evidência do push idempotente: mensagem de "nenhuma ação necessária" / `Nothing to commit`.
 
-**Prompts no Hub:**  
-`{seu_username}/bug_to_user_story_v2`
+**Comando usado para gerar avaliação final:**
+
+```bash
+python src/evaluate.py
+```
+
+### Roteiro rápido de captura (2–3 minutos)
+
+Use esta ordem para gerar todas as evidências sem retrabalho:
+
+1. Abra o projeto no dashboard (`desafio-prompt-engineering_mba`) e capture `screenshots/langsmith_project_overview.png`.
+2. No mesmo projeto, abra o dataset `desafio-prompt-engineering_mba-eval` e capture `screenshots/langsmith_dataset.png`.
+3. Abra o prompt publicado no Hub (`viviane-pereira/viviane-pereira`) e capture `screenshots/langsmith_prompt_hub.png`.
+4. Volte para a execução final do `evaluate.py` e capture a tela de métricas agregadas em `screenshots/langsmith_run_metrics.png`.
+5. Na página da run, abra três traces diferentes (um por vez) e capture:
+   - `screenshots/langsmith_trace_example_1.png`
+   - `screenshots/langsmith_trace_example_2.png`
+   - `screenshots/langsmith_trace_example_3.png`
+6. No terminal após `python src/push_prompts.py`, capture a mensagem de push idempotente em `screenshots/langsmith_push_idempotent_log.png`.
+
+Dica: mantenha o mesmo zoom/navegador em todas as capturas para padronizar a evidência visual do entregável.
+
+### Checklist operacional (copiar e colar)
+
+```text
+[ ] 1) Project overview → screenshots/langsmith_project_overview.png
+[ ] 2) Dataset (15 exemplos) → screenshots/langsmith_dataset.png
+[ ] 3) Prompt no Hub (público) → screenshots/langsmith_prompt_hub.png
+[ ] 4) Run metrics finais (>=0.9) → screenshots/langsmith_run_metrics.png
+[ ] 5) Trace exemplo 1 → screenshots/langsmith_trace_example_1.png
+[ ] 6) Trace exemplo 2 → screenshots/langsmith_trace_example_2.png
+[ ] 7) Trace exemplo 3 → screenshots/langsmith_trace_example_3.png
+[ ] 8) Log de push idempotente (Nothing to commit) → screenshots/langsmith_push_idempotent_log.png
+```
+
+**Link do dashboard LangSmith (quando disponível):**
+- Principal: https://smith.langchain.com/projects/desafio-prompt-engineering_mba
+- Alternativo (com `organizationId`): https://smith.langchain.com/projects/desafio-prompt-engineering_mba?organizationId=05cbad01-75e8-484c-ba5f-7323b40af45b
+
+**Prompts no Hub:**
+- Principal: https://smith.langchain.com/prompts/viviane-pereira/viviane-pereira
+- Alternativo (com `organizationId`): https://smith.langchain.com/prompts/viviane-pereira/viviane-pereira?organizationId=05cbad01-75e8-484c-ba5f-7323b40af45b
 
 
 ### Estrutura do Projeto

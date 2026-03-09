@@ -80,7 +80,7 @@ class PromptValidator:
 class PromptPusher:
     """Responsável por fazer push de prompts ao LangSmith Hub."""
     
-    def __init__(self, prompt_name: str, prompt_data: Dict[str, Any]):
+    def __init__(self, prompt_name: str, prompt_data: Dict[str, Any], is_public: bool = True):
         """
         Inicializa o PushPrompts.
         
@@ -90,6 +90,7 @@ class PromptPusher:
         """
         self.prompt_name = prompt_name
         self.prompt_data = prompt_data
+        self.is_public = is_public
     
     def push(self) -> bool:
         """
@@ -113,11 +114,25 @@ class PromptPusher:
             chat_template = self._create_chat_template()
             
             # Fazer push
-            hub.push(self.prompt_name, chat_template)
+            hub.push(
+                self.prompt_name,
+                chat_template,
+                new_repo_is_public=self.is_public,
+                new_repo_description=self.prompt_data.get("description", ""),
+                tags=self.prompt_data.get("techniques_applied", [])
+            )
             logger.info(f"✓ Prompt publicado com sucesso: {self.prompt_name}")
             return True
             
         except Exception as e:
+            error_message = str(e)
+            if "409" in error_message and "Nothing to commit" in error_message:
+                logger.info(
+                    "Prompt sem alterações desde o último commit no Hub. "
+                    "Nenhuma ação necessária (estado já publicado)."
+                )
+                return True
+
             logger.error(f"Erro ao fazer push: {e}")
             logger.warning("Verifique LANGSMITH_API_KEY no .env")
             return False
@@ -167,10 +182,16 @@ def main() -> int:
     
     # Configurar parâmetros
     prompt_path = "prompts/bug_to_user_story_v2.yml"
-    prompt_name = os.getenv(
-        "PUSH_PROMPT_NAME", 
-        "Viviane Pereira/bug_to_user_story_v2"
-    )
+    prompt_name = os.getenv("PUSH_PROMPT_NAME", "bug_to_user_story_v2")
+    push_public = os.getenv("PUSH_PROMPT_PUBLIC", "true").strip().lower() in {
+        "1", "true", "yes", "y", "on"
+    }
+
+    if "/" not in prompt_name:
+        logger.warning(
+            "PUSH_PROMPT_NAME sem namespace (owner/prompt). "
+            "Recomendado usar formato 'seu_usuario/bug_to_user_story_v2' para fácil localização no Hub."
+        )
     
     # Carregar YAML
     logger.info(f"Carregando prompt: {prompt_path}")
@@ -182,13 +203,15 @@ def main() -> int:
     logger.info(f"✓ Prompt carregado com sucesso")
     
     # Fazer push
-    pusher = PromptPusher(prompt_name, prompt_data)
+    pusher = PromptPusher(prompt_name, prompt_data, is_public=push_public)
     success = pusher.push()
     
     if success:
         logger.info(
             f"\n✓ Pronto! Acesse seu prompt em:\n"
-            f"  https://smith.langchain.com/prompts"
+            f"  https://smith.langchain.com/prompts\n"
+            f"  Nome publicado: {prompt_name}\n"
+            f"  Público: {push_public}"
         )
         return 0
     else:
